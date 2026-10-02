@@ -6,7 +6,6 @@ node_modules/
 # Expo
 .expo/
 dist/
-web-build/
 expo-env.d.ts
 
 # Native
@@ -31,11 +30,23 @@ yarn-error.*
 *.pem
 
 # local env files
+.env
 .env*.local
-
+.env.local
+.env.*
 # typescript
 *.tsbuildinfo
-
+.vscode
 # generated native folders
 /ios
 /android
+
+# EAS local builds and store credentials
+/build
+/credentials
+*.apk
+*.aab
+*.ipa
+
+# keep the committed template for local env files
+!.env.example

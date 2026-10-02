@@ -1,0 +1,12 @@
+{
+  "welcome": {
+    "title": "Bienvenido a {{appName}}",
+    "subtitle": "Esta plantilla incluye Expo Router, TanStack Query, Zustand, i18n y un design system con temas.",
+    "cta": "Ver clubes"
+  },
+  "notFound": {
+    "title": "Página no encontrada",
+    "message": "Esta pantalla no existe.",
+    "goHome": "Ir al inicio"
+  }
+}

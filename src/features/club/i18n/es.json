@@ -1,0 +1,19 @@
+{
+  "club": {
+    "listTitle": "Clubes",
+    "detailTitle": "Club",
+    "empty": "Aún no hay clubes",
+    "membersCount_one": "{{count}} miembro",
+    "membersCount_other": "{{count}} miembros"
+  },
+  "member": {
+    "title": "Miembros",
+    "empty": "Aún no hay miembros",
+    "invite": "Invitar miembro",
+    "role": {
+      "owner": "Propietario",
+      "admin": "Administrador",
+      "member": "Miembro"
+    }
+  }
+}

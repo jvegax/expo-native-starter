@@ -10,6 +10,8 @@ Expo ships breaking changes every SDK release. APIs you remember are likely rena
 
 ## Commands
 
+Environments are selected with `APP_ENV` (`production` | `preview`, default `preview`) in `app.config.ts`; there is no `app.json`. A `.env` file is optional (`cp .env.example .env` to change defaults locally). `src/config/env.ts` validates what `app.config.ts` exposes through `expoConfig.extra` and is the only place the app reads environment values.
+
 Use `bunx` instead of `npx` if the project uses bun (`bun.lock` present).
 
 ```bash
@@ -19,7 +21,12 @@ npx expo lint               # lint
 npx tsc --noEmit            # typecheck
 npx expo-doctor             # diagnose dependency and config issues
 npx expo install --fix      # fix incompatible package versions
+npx expo config --type public             # inspect the resolved config (APP_ENV=production ... for production)
+bun run build:dev:android                 # EAS development build (APK, preview backend) on expo.dev
+bun run build:local dev-android           # same build on this machine, artifact in build/
 ```
+
+EAS profiles live in `eas.json` (`dev-android`, `dev-ios`, `preview`, `production`); every `build:*` and `submit:*` script in `package.json` maps to one of them.
 
 Run lint and typecheck before declaring any task done.
 
@@ -36,6 +43,10 @@ Docs: https://docs.expo.dev/eas/index.md
 
 ## Rules
 
-- If `ios/` and `android/` directories do not exist, they are generated (Continuous Native Generation). Never create or edit them by hand — configure native behavior in `app.json` and config plugins.
-- Expo Go only includes its bundled native modules. After adding a library with native code, the app needs a development build: `npx expo run:ios|android` locally, or `eas build --profile development`.
+- Before creating or changing anything under `src/` (feature, entity, screen, route, component, hook, API call, query, mutation, store, translation, theme, config, SDK), load the `app-architecture` skill (`.agents/skills/app-architecture/SKILL.md`, symlinked from `.claude/skills/`) and follow it. The `club` domain (`src/features/club`, `src/components/club`, `src/screens/club`) is the reference implementation.
+- Every import uses the `@/` alias and points at the declaring file. No relative imports (`./`, `../`), no `index.ts` barrels, no `export * from`. ESLint enforces all three.
+- Lists always use `<List>` from `@/shared/ui/list/list` (LegendList). `FlatList`/`SectionList`/`VirtualizedList` are lint errors. Images always use `<Image>` from `@/shared/ui/image/image` (expo-image); `Image`/`ImageBackground` from `react-native` are lint errors.
+- The React Compiler is on (`experiments.reactCompiler` in `app.config.ts`). Do not add `useMemo`, `useCallback` or `React.memo` for performance, and never `eslint-disable` a hooks rule (the compiler skips that code). Performance rules, startup path and native-feel patterns: README "Performance and native feel".
+- If `ios/` and `android/` directories do not exist, they are generated (Continuous Native Generation). Never create or edit them by hand — configure native behavior in `app.config.ts` and config plugins.
+- Expo Go only includes its bundled native modules. After adding a library with native code, the app needs a new development build: `bun run ios|android` locally, or `bun run build:dev:ios|android` on EAS. This app never runs in Expo Go (MMKV / Nitro Modules).
 - Prefer recommended Expo modules over third-party libraries, and check your available skills before adding dependencies. Docs: https://docs.expo.dev/versions/latest/index.md

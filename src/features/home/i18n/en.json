@@ -1,0 +1,12 @@
+{
+  "welcome": {
+    "title": "Welcome to {{appName}}",
+    "subtitle": "This starter ships with Expo Router, TanStack Query, Zustand, i18n and a themed design system.",
+    "cta": "Browse clubs"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "message": "This screen does not exist.",
+    "goHome": "Go home"
+  }
+}

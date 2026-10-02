@@ -1,0 +1,15 @@
+{
+  "actions": {
+    "ok": "OK",
+    "cancel": "Cancel",
+    "retry": "Retry"
+  },
+  "errors": {
+    "generic": "Something went wrong",
+    "network": "Check your connection and try again"
+  },
+  "states": {
+    "loading": "Loading…",
+    "empty": "Nothing here yet"
+  }
+}

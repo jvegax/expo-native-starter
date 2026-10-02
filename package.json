@@ -1,22 +1,84 @@
 {
-  "name": "klubero-app",
+  "name": "expo-native-starter",
   "version": "1.0.0",
-  "main": "index.ts",
-  "dependencies": {
-    "expo": "~57.0.26",
-    "expo-status-bar": "~57.0.1",
-    "react": "19.2.3",
-    "react-native": "0.86.3"
-  },
-  "devDependencies": {
-    "@types/react": "~19.2.2",
-    "typescript": "~6.0.3"
-  },
+  "main": "expo-router/entry",
   "scripts": {
     "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web"
+    "start:production": "APP_ENV=production expo start",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "lint": "expo lint",
+    "typecheck": "tsc --noEmit",
+    "doctor": "expo-doctor",
+    "config": "expo config --type public",
+    "config:production": "APP_ENV=production expo config --type public",
+    "eas:login": "eas login",
+    "eas:init": "eas init",
+    "eas:device": "eas device:create",
+    "env:pull:preview": "eas env:pull --environment preview",
+    "env:pull:production": "eas env:pull --environment production",
+    "build:dev:android": "eas build --profile dev-android --platform android",
+    "build:dev:ios": "eas build --profile dev-ios --platform ios",
+    "build:preview:android": "eas build --profile preview --platform android",
+    "build:preview:ios": "eas build --profile preview --platform ios",
+    "build:production:android": "eas build --profile production --platform android",
+    "build:production:ios": "eas build --profile production --platform ios",
+    "build:production:all": "eas build --profile production --platform all",
+    "build:local": "sh scripts/eas-build-local.sh",
+    "build:run:android": "eas build:run --platform android --latest",
+    "build:run:ios": "eas build:run --platform ios --latest",
+    "submit:preview:android": "eas submit --profile preview --platform android --latest",
+    "submit:preview:ios": "eas submit --profile preview --platform ios --latest",
+    "submit:production:android": "eas submit --profile production --platform android --latest",
+    "submit:production:ios": "eas submit --profile production --platform ios --latest"
   },
-  "private": true
+  "dependencies": {
+    "@legendapp/list": "^3.6.0",
+    "@tanstack/query-async-storage-persister": "^5.104.0",
+    "@tanstack/react-query": "^5.104.0",
+    "@tanstack/react-query-persist-client": "^5.104.0",
+    "expo": "~57.0.26",
+    "expo-build-properties": "~57.0.22",
+    "expo-constants": "~57.0.20",
+    "expo-dev-client": "~57.0.19",
+    "expo-image": "~57.0.5",
+    "expo-linking": "~57.0.11",
+    "expo-localization": "~57.0.2",
+    "expo-network": "~57.0.2",
+    "expo-router": "~57.0.24",
+    "expo-secure-store": "~57.0.4",
+    "expo-splash-screen": "~57.0.9",
+    "expo-status-bar": "~57.0.1",
+    "expo-system-ui": "~57.0.4",
+    "i18next": "^26.4.2",
+    "react": "19.2.3",
+    "react-i18next": "^17.0.15",
+    "react-native": "0.86.3",
+    "react-native-gesture-handler": "~2.32.0",
+    "react-native-mmkv": "^4.3.2",
+    "react-native-nitro-modules": "0.37.1",
+    "react-native-reanimated": "4.5.1",
+    "react-native-safe-area-context": "~5.7.0",
+    "react-native-screens": "~4.26.0",
+    "react-native-worklets": "0.10.1",
+    "zod": "^4.6.5",
+    "zustand": "^5.0.15"
+  },
+  "devDependencies": {
+    "@tanstack/eslint-plugin-query": "^5.0.0",
+    "@types/react": "~19.2.2",
+    "babel-plugin-transform-remove-console": "^6.9.4",
+    "eas-cli": "^24.8.0",
+    "eslint": "^9.0.0",
+    "eslint-config-expo": "~57.0.2",
+    "typescript": "~6.0.3"
+  },
+  "private": true,
+  "overrides": {
+    "decode-uri-component": "^0.5.0",
+    "uuid": "^11.1.1"
+  },
+  "patchedDependencies": {
+    "query-string@7.1.3": "patches/query-string@7.1.3.patch"
+  }
 }

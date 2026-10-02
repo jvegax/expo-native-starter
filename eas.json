@@ -1,0 +1,90 @@
+{
+  "cli": {
+    "version": ">= 24.0.0",
+    "appVersionSource": "remote",
+    "requireCommit": false
+  },
+  "build": {
+    "base": {
+      "node": "24.20.0",
+      "env": {
+        "APP_ENV": "preview"
+      }
+    },
+    "dev-android": {
+      "extends": "base",
+      "developmentClient": true,
+      "distribution": "internal",
+      "environment": "preview",
+      "channel": "development",
+      "android": {
+        "buildType": "apk"
+      }
+    },
+    "dev-ios": {
+      "extends": "base",
+      "developmentClient": true,
+      "distribution": "internal",
+      "environment": "preview",
+      "channel": "development",
+      "ios": {
+        "simulator": false
+      }
+    },
+    "preview": {
+      "extends": "base",
+      "distribution": "internal",
+      "environment": "preview",
+      "channel": "preview",
+      "env": {
+        "APP_ENV": "preview",
+        "EXPO_UNSTABLE_METRO_OPTIMIZE_GRAPH": "1",
+        "EXPO_UNSTABLE_TREE_SHAKING": "1"
+      },
+      "android": {
+        "buildType": "apk"
+      }
+    },
+    "production": {
+      "extends": "base",
+      "distribution": "store",
+      "environment": "production",
+      "channel": "production",
+      "autoIncrement": true,
+      "env": {
+        "APP_ENV": "production",
+        "EXPO_UNSTABLE_METRO_OPTIMIZE_GRAPH": "1",
+        "EXPO_UNSTABLE_TREE_SHAKING": "1"
+      },
+      "android": {
+        "buildType": "app-bundle"
+      }
+    }
+  },
+  "submit": {
+    "preview": {
+      "ios": {
+        "appleId": "you@example.com",
+        "ascAppId": "1234567890",
+        "appleTeamId": "ABCDE12345"
+      },
+      "android": {
+        "serviceAccountKeyPath": "./credentials/google-service-account.json",
+        "track": "internal",
+        "releaseStatus": "draft"
+      }
+    },
+    "production": {
+      "ios": {
+        "appleId": "you@example.com",
+        "ascAppId": "1234567890",
+        "appleTeamId": "ABCDE12345"
+      },
+      "android": {
+        "serviceAccountKeyPath": "./credentials/google-service-account.json",
+        "track": "production",
+        "releaseStatus": "draft"
+      }
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "actions": {
+    "ok": "Aceptar",
+    "cancel": "Cancelar",
+    "retry": "Reintentar"
+  },
+  "errors": {
+    "generic": "Algo ha ido mal",
+    "network": "Revisa tu conexión e inténtalo de nuevo"
+  },
+  "states": {
+    "loading": "Cargando…",
+    "empty": "Aún no hay nada aquí"
+  }
+}
