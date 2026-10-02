@@ -160,7 +160,7 @@ Files are kebab-case with a layer suffix; exports are PascalCase for components/
 
 ## Performance rules
 
-The full rationale is in README "Performance and native feel". The short version:
+The full rationale is in `docs/performance.md`. The short version:
 
 - **The React Compiler is on.** Write plain components; no `useMemo` / `useCallback` / `React.memo` for performance. Keep them only to pin an effect dependency. Never `eslint-disable` a hooks rule (`react-hooks/rule-suppression` is an error): the compiler skips that code. `'use no memo'` only to bisect a compiler bug.
 - **Share across instances at module scope**, not with hooks: `createStyles` at module scope in `.styles.ts`, expensive objects (formatters) in module caches.
