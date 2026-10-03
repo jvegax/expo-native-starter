@@ -123,7 +123,7 @@ Adding, removing or upgrading a library with native code needs a new development
 
 ## AI coding agents
 
-`AGENTS.md` is the entry point. `.agents/skills/app-architecture/` (symlinked from `.claude/skills/`) tells an agent where every file goes and which shared code already exists; `.agents/skills/navigation-auth/` covers routes, the auth gate, tabs, the drawer and swapping in real auth.
+`AGENTS.md` is the entry point. `.agents/skills/app-architecture/` (symlinked from `.claude/skills/`) tells an agent where every file goes and which shared code already exists; `.agents/skills/navigation-auth/` covers routes, the auth gate, tabs, the drawer and swapping in real auth. Design and motion follow two official Expo skills, `expo-design-system` (tokens, components, the named native-slop tells) and `expo-animation` (made with Emil Kowalski), installed with the `skills` CLI and pinned in `skills-lock.json` (`bunx skills update` to refresh them). `AGENTS.md` lists where this repo overrides them.
 
 ## License
 
