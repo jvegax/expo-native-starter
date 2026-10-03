@@ -1,5 +1,7 @@
 export const STORAGE_KEYS = {
   authToken: 'auth.token',
+  // Signed-in user profile (id, name, email). Not a credential, so it lives in MMKV.
+  authUser: 'auth.user',
   language: 'settings.language',
   queryCache: 'query.cache',
 } as const;

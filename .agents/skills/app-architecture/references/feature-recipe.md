@@ -36,9 +36,13 @@ Example: `profile` with a `user` entity (GET /me, update display name).
    ```
 2. Fill it following section A, in the same order (types → api → queries → mutations → components → screens).
 3. **Register the namespace**: `features/profile/i18n/resources.ts` exports `profileResources = { en, es } as const`; add `profile: profileResources.<lang>` under every language in `src/config/i18n/resources.ts`. Typed `t()` keys come from that file.
-4. **Route**: `src/app/profile.tsx` → `export { ProfileScreen as default } from '@/screens/profile/user/profile-screen';`. For a param route, `src/app/profile/[userId].tsx` reads `useLocalSearchParams` and passes props. Typed hrefs come from `.expo/types/router.d.ts`, which only the dev server regenerates: start `bunx expo start` in the background, wait until that file lists the new path, then stop it (there is no `timeout` on macOS; poll the file in a loop). Until then `router.push('/profile')` fails `tsc`.
+4. **Route** (pick the folder with the `navigation-auth` skill: inside a tab, over the tabs, a drawer item, signed-out only): e.g. `src/app/profile.tsx` → `export { ProfileScreen as default } from '@/screens/profile/user/profile-screen';`. For a param route, `src/app/profile/[userId].tsx` reads `useLocalSearchParams` and passes props. Typed hrefs come from `.expo/types/router.d.ts`, which only the dev server regenerates: start `bunx expo start` in the background, wait until that file lists the new path, then stop it (there is no `timeout` on macOS; poll the file in a loop). Until then `router.push('/profile')` fails `tsc`.
 5. **Navigation entry**: call `router.push('/profile')` from wherever the user reaches it. Links between domains go through screens and routes, not through imports of each other's internals.
 6. `bunx tsc --noEmit && bunx expo lint`. ESLint discovers domains by listing `src/features` and `src/components`, so the new folders get their boundary rules automatically.
+
+## Mocking an endpoint before the backend exists
+
+`features/auth` shows the pattern. The `api/` function keeps its final signature and its body delegates to a mock in `utils/<entity>/mock-<thing>.ts` (simulated latency, deterministic failures to exercise the error UI). A `REAL <X>:` comment in the api file shows the replacement call. Everything above `api/` (mutations, queries, stores, screens) is real code and does not change when the mock goes away. Keep a single mock file per domain so deleting it is the whole cleanup.
 
 ## C. Promoting code to shared
 

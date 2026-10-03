@@ -2,6 +2,7 @@ import { router, Stack } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
+import { selectIsSignedIn, useSessionStore } from '@/features/auth/store/session/session.store';
 import { createStyles } from '@/screens/home/not-found/not-found-screen.styles';
 import { useStyles } from '@/shared/theme/use-styles';
 import { Button } from '@/shared/ui/button/button';
@@ -12,6 +13,12 @@ import { Text } from '@/shared/ui/text/text';
 export function NotFoundScreen() {
   const styles = useStyles(createStyles);
   const { t } = useTranslation('home');
+  const isSignedIn = useSessionStore(selectIsSignedIn);
+
+  // Back when there is history (no second copy of the app underneath). On a cold-start deep link
+  // +not-found is the only route: replace with a route the auth gate allows right now, because a
+  // protected group is not registered and a replace into it would be silently ignored.
+  const leave = () => (router.canGoBack() ? router.back() : router.replace(isSignedIn ? '/' : '/sign-in'));
 
   return (
     <Screen>
@@ -20,8 +27,7 @@ export function NotFoundScreen() {
         <Text color="textMuted" align="center">
           {t('notFound.message')}
         </Text>
-        {/* replace, not push: the unmatched URL should not stay in the back history. */}
-        <Button label={t('notFound.goHome')} variant="ghost" onPress={() => router.replace('/')} />
+        <Button label={t('notFound.goHome')} variant="ghost" onPress={leave} />
       </View>
     </Screen>
   );

@@ -96,7 +96,7 @@ Domain types shadow globals from the DOM lib when they share a name (`Event`, `R
 - May compose across domains: a dashboard screen in `screens/home` can render `ClubCard` and call `useClubsQuery`. Components cannot; only screens cross domain lines.
 - Receive route params as typed props; the route file in `src/app` reads `useLocalSearchParams` and passes them.
 - Set their own header with `<Stack.Screen options={{ title }} />` so the route file stays a re-export. Header colours come from the navigation theme (`@/shared/theme/navigation-theme`), never per screen. A top-level list screen may use the iOS large title (`headerLargeTitleEnabled: true`, `headerLargeTitleShadowVisible: false`, see `club-list-screen.tsx`).
-- Wrap content in `<Screen>` (safe area + background + horizontal padding; pass `padded={false}` for full-bleed lists).
+- Pick the screen container: `<ScrollScreen>` for static scrollable content, `<List>` for data (wrapped in `<Screen edges={['left', 'right']}>` for its async states), `<Screen>` (safe area + background + horizontal padding; `padded={false}` for full-bleed) for non-scrolling content.
 - Use `<AsyncState>` for pending/error/empty; do not hand-roll spinners.
 
 ## Lists

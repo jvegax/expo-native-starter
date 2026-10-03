@@ -18,8 +18,9 @@ This project is a starter template. Everything you add is a pattern the next app
 
 ```
 src/
-├── app/            Expo Router routes ONLY. Thin files that re-export a screen from @/screens.
+├── app/            Expo Router routes ONLY. Thin files that re-export a screen (or a navigator layout) from @/screens.
 ├── screens/        One folder per domain, then per entity. A screen is composition: queries + components.
+│                   screens/navigation/ holds the navigator layouts (root gate, stacks, drawer, tabs).
 ├── components/     One folder per domain, then per entity, then per component. Domain UI (ClubCard, MemberRow).
 ├── features/       One folder per domain. Data and domain logic only, each layer split by entity (below).
 ├── shared/         Cross-domain code: ui/ (design system), theme/, lib/ (http, storage, perf), hooks/, utils/, types/, constants/, i18n/ (common namespace).
@@ -28,7 +29,7 @@ src/
 └── types/          Ambient .d.ts only (env, i18next, tanstack-query registrations).
 ```
 
-Read `references/config-and-i18n.md` before touching `config/`, `providers/`, env vars, SDKs or translations.
+Read `references/config-and-i18n.md` before touching `config/`, `providers/`, env vars, SDKs or translations. Load the `navigation-auth` skill before touching routes, `_layout.tsx` files, tabs, the drawer or the auth/session flow.
 
 ## Imports
 
@@ -58,7 +59,9 @@ screens/club/                                    composition only
 └── club/       club-list-screen.tsx  club-detail-screen.tsx  club-screens.styles.ts
 ```
 
-A domain may exist in only one tree (`features/home` has just `i18n/`; a pure-UI domain may have no `features/` folder at all).
+A domain may exist in only one tree (`features/home` and `features/account` have just `i18n/`; `screens/navigation` has no other tree at all).
+
+`features/auth` is the second reference: a session store (`store/session/`), mutations without queries, a hook (`hooks/session/use-confirm-sign-out.ts`), validation utils, and the mock seam (`api/session/*.api.ts` call `utils/session/mock-auth.ts`).
 
 `references/feature-recipe.md` has the ordered file list for a new domain and for a new entity.
 
@@ -74,7 +77,7 @@ A domain may exist in only one tree (`features/home` has just `i18n/`; a pure-UI
 | `providers/`    | `@/config/*`, `@/shared/*`                                                                             | `features/`, `components/`, `screens/`, `app/`         |
 | `config/`       | everything it composes, plus `@/features/*/i18n/*` and `@/features/*/store/*` (the only feature imports) | `app/`, `screens/`, `components/`                    |
 
-Screens compose across domains (a home screen may render `ClubCard` and call `useClubsQuery`); components stay inside their domain. Two domains needing the same component means the generic part belongs in `shared/ui`. Needing any other exception is a signal the code is in the wrong folder, not a reason to disable the rule.
+Screens compose across domains (a home screen may render `ClubCard` and call `useClubsQuery`); components stay inside their domain. A navigator layout that needs app state (the auth gate reads the session store) lives in `screens/navigation/<navigator>/*-layout.tsx` (never `*-screen.tsx`) and the route `_layout.tsx` re-exports it, because `app/` may not import `features/`. Two domains needing the same component means the generic part belongs in `shared/ui`. Needing any other exception is a signal the code is in the wrong folder, not a reason to disable the rule.
 
 ## Checklists
 
@@ -92,9 +95,10 @@ Screens compose across domains (a home screen may render `ClubCard` and call `us
 5. Above ~100 lines or a second responsibility: extract children as sibling files (`club-card-header.tsx`). See `references/components.md`.
 
 **New screen + route**
-1. Screen in `screens/<d>/<entity>/<name>-screen.tsx`: calls query hooks, composes components, wraps in `<Screen>`, sets `<Stack.Screen options={{ title }} />`. Route params arrive as props.
-2. Route file in `src/app/...`: `export { XScreen as default } from '@/screens/<d>/<entity>/<name>-screen'`, or a 5-line component that reads `useLocalSearchParams` and passes props. Nothing else lives in `src/app`.
-3. Navigate with typed hrefs: `router.push({ pathname: '/clubs/[clubId]', params: { clubId } })`.
+1. Screen in `screens/<d>/<entity>/<name>-screen.tsx`: calls query hooks, composes components, picks its container (step 4), sets `<Stack.Screen options={{ title }} />`. Route params arrive as props.
+2. Route file in `src/app/...`: `export { XScreen as default } from '@/screens/<d>/<entity>/<name>-screen'`, or a 5-line component that reads `useLocalSearchParams` and passes props. Nothing else lives in `src/app`. Which folder (inside a tab, over the tabs, a sheet, signed-out only) is decided by the `navigation-auth` skill's "Where does a new screen go?" table.
+3. Navigate with typed hrefs: `router.push({ pathname: '/clubs/[clubId]', params: { clubId } })`. Group folders like `(app)` are not part of the URL.
+4. Container: static content in `<ScrollScreen>` (first native child, so large titles collapse and tab bars inset); a data list in `<List>` (inside `<Screen edges={['left', 'right']}>` when it needs loading/error states, as `ClubListScreen` does, so the list scrolls under the tab bar); non-scrolling content in `<Screen>` (its bottom safe-area edge clears the tab bar).
 
 **New translation**
 Add the key to every language file of the domain namespace (`features/<d>/i18n/*.json`), grouped under the entity. Use `useTranslation('<domain>')`; strings shared across domains go to `shared/i18n` (`common` namespace). Keys are typed: `bunx tsc --noEmit` fails on typos.
@@ -129,7 +133,7 @@ Files are kebab-case with a layer suffix; exports are PascalCase for components/
 | -------------------------------------------------- | -------------------------------------- |
 | Anything fetched from the API                      | TanStack Query cache (queries/mutations) |
 | Local UI state of one component/screen             | `useState` / `useReducer`              |
-| Client state shared across screens (session, filters, drafts, prefs) | Zustand store in `features/<d>/store/<entity>/` |
+| Client state shared across screens (session, filters, drafts, prefs) | Zustand store in `features/<d>/store/<entity>/` (reference: `features/auth/store/session/session.store.ts`) |
 | Derived from server data                           | `select` in the query, or compute in render |
 | Form state                                         | local state (or a form lib if one is adopted) |
 
@@ -144,6 +148,11 @@ Files are kebab-case with a layer suffix; exports are PascalCase for components/
 | Ids / dates / nullable                | `Id`, `ISODateString`, `Nullable`, `Maybe` in `@/shared/types/common.types` |
 | Loading / error / empty rendering     | `<AsyncState>` in `@/shared/ui/async-state/async-state`  |
 | Screen container, text, button        | `<Screen>`, `<Text>`, `<Button>` in `@/shared/ui/<name>/<name>` |
+| Scrollable static screen              | `<ScrollScreen>` in `@/shared/ui/scroll-screen/scroll-screen` (`contentInsetAdjustmentBehavior="automatic"`: large titles collapse, content clears the tab bar) |
+| Text input with label and error       | `<TextField>` in `@/shared/ui/text-field/text-field` |
+| Platform icon                         | `<Icon ios="<SF Symbol>" android="<Material Symbol>" />` in `@/shared/ui/icon/icon` (expo-symbols). No icon font library. |
+| Settings-style menu rows              | `<ListSection>` + `<ListRow>` in `@/shared/ui/list-section/list-section`, `@/shared/ui/list-row/list-row` (short static menus; data lists use `<List>`) |
+| Session (signed in?, user, sign out)  | `useSessionStore` + `selectIsSignedIn` / `selectUser` in `@/features/auth/store/session/session.store`, `useConfirmSignOut` in `@/features/auth/hooks/session/use-confirm-sign-out`. See the `navigation-auth` skill. |
 | Any list of rows                      | `<List>` in `@/shared/ui/list/list` (LegendList; `keyExtractor` + `estimatedItemSize` required; `contentInsetAdjustmentBehavior="automatic"` by default). `FlatList` is a lint error. |
 | Any image                             | `<Image>` and `prefetchImages` in `@/shared/ui/image/image` (expo-image, memory + disk cache). `Image` from `react-native` is a lint error. |
 | Theme-aware styles                    | `useStyles` in `@/shared/theme/use-styles` (module cache: one style object per factory and theme), `useTheme` in `@/shared/theme/use-theme`, `Theme` type in `@/shared/theme/theme.types` |
@@ -153,7 +162,7 @@ Files are kebab-case with a layer suffix; exports are PascalCase for components/
 | Debounce                              | `useDebouncedValue` in `@/shared/hooks/use-debounced-value` |
 | Locale-aware dates and numbers        | `formatDate`, `formatNumber` in `@/shared/utils/format` (pass `i18n.language`; formatters are cached) |
 | Persistence contract                  | `storage` (synchronous `get/set/remove`; MMKV, SecureStore for `SECRET_KEYS`) and `persistStorage` (MMKV-only adapter for zustand `persist` and TanStack) in `@/shared/lib/storage/storage` |
-| Storage keys                          | `STORAGE_KEYS`, `SECRET_KEYS` in `@/shared/constants/storage-keys` |
+| Storage keys                          | `STORAGE_KEYS`, `SECRET_KEYS` in `@/shared/constants/storage-keys` (`authToken` is secret; `authUser` is MMKV) |
 | Startup / responsiveness marks        | `markScreenInteractive`, `observeLongTasks` in `@/shared/lib/perf/startup-metrics` |
 | Persisting a query to disk            | `meta: { persist: true }` on its `queryOptions` (non-personal data only), see `references/data-layer.md` |
 | Default page size, app name           | `appConfig` in `@/config/app`                            |
@@ -188,3 +197,4 @@ Work is finished when all of these hold:
 - `references/components.md` — the component tree, splitting heuristics, styles pattern, press feedback, lists, images, design-system usage.
 - `references/state.md` — when Zustand is justified, the store template and persistence with `persistStorage`.
 - `references/config-and-i18n.md` — env, `app.config.ts`, bootstrap, providers, SDK registration (critical or deferred), adding languages and namespaces.
+- `.agents/skills/navigation-auth/SKILL.md` (separate skill) — route tree, auth gate, mocked session, drawer, native tabs, where a new screen goes.

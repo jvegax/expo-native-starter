@@ -8,5 +8,19 @@
     "title": "Página no encontrada",
     "message": "Esta pantalla no existe.",
     "goHome": "Ir al inicio"
+  },
+  "items": {
+    "title": "Explora la navegación",
+    "rowTitle": "Elemento {{id}}",
+    "rowSubtitle": "Abre un detalle sin datos"
+  },
+  "item": {
+    "title": "Elemento {{id}}",
+    "body": "Una pantalla de detalle mock sin datos. Se apila en el stack de la app, por encima del drawer y las tabs, así que tapa la tab bar y vuelve atrás con el gesto nativo.",
+    "openNext": "Abrir elemento {{id}}",
+    "openSheet": "Abrir sheet",
+    "sheetTitle": "Sheet nativo",
+    "sheetBody": "Un form sheet con detents y grabber. Arrástralo arriba o abajo, o ciérralo.",
+    "close": "Cerrar"
   }
 }

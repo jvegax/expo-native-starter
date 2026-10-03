@@ -6,7 +6,7 @@ ESLint (`eslint.config.js`) turns these into errors, so a wrong import fails `bu
 
 | From | May import | Never |
 | --- | --- | --- |
-| `app/` | `screens/`, `providers/`, `config/`, `shared/` | `features/`, `components/` |
+| `app/` | `screens/` (screens and `screens/navigation` layouts), `providers/`, `config/`, `shared/` | `features/`, `components/` |
 | `screens/` | `components/` and `features/` of any domain, `shared/`, `config/env`, `config/app` | `app/`, `providers/`, other screens |
 | `components/X` | `components/X` (own domain), `features/`, `shared/`, `config/env`, `config/app` | `screens/`, other domains' components |
 | `features/X` | `features/X`, other features' `types/` and `store/`, `shared/`, `config/env`, `config/app` | views, other features' api/queries/mutations |
@@ -52,9 +52,28 @@ Every layer is split by entity, so an entity can be found, grown or deleted as a
 
 ## Startup and providers
 
-`app/_layout.tsx` calls `bootstrap()` (`config/bootstrap.ts`) at module scope, before any screen mounts. It initialises i18n (language read synchronously from MMKV), critical SDKs, the HTTP client, the TanStack focus and online managers, and schedules deferred SDKs.
+`app/_layout.tsx` calls `bootstrap()` (`config/bootstrap.ts`) at module scope, before any screen mounts. It initialises i18n (language read synchronously from MMKV), critical SDKs, the HTTP client (token from the session store, 401 → sign out), the auth cleanup subscription (`setupAuth`), the TanStack focus and online managers, and schedules deferred SDKs. It then renders `<RootNavigator />` inside the providers.
 
 Providers are composed once in `providers/app-providers.tsx`, outermost first: `GestureHandlerRootView` → `PersistQueryClientProvider` → `ThemeProvider` (tokens, navigation theme, system UI) → `I18nextProvider`. Expo Router already renders the `SafeAreaProvider`.
+
+## Navigation and auth
+
+```
+Root Stack (screens/navigation/root/root-navigator.tsx)   ← the only auth gate
+├── Stack.Protected guard={!isSignedIn}
+│   └── (auth) Stack: sign-in, sign-up
+└── Stack.Protected guard={isSignedIn}
+    └── (app) Stack: details/[id], sheet (formSheet)        ← covers drawer and tabs
+        └── (drawer) Drawer: settings
+            └── (tabs) NativeTabs: (home), clubs, profile    ← each tab is its own native Stack
+```
+
+- `useSessionStore` (`features/auth/store/session`) is seeded synchronously from SecureStore/MMKV, so the guard is right on the first frame; no splash handling or loading state.
+- Signing in or out only changes the store. `Stack.Protected` then swaps the groups and drops their history; nothing calls `router.replace`.
+- Auth is mocked behind `features/auth/api/session/*.api.ts`; swapping in a real backend changes only those bodies.
+- Navigator layouts live in `screens/navigation/` and `_layout.tsx` files re-export them, because routes may not import features.
+
+Full rules (where a new screen goes, tabs and drawer limits, swapping in real auth): `.agents/skills/navigation-auth/`.
 
 ## Design system and theming
 
@@ -79,4 +98,6 @@ One namespace per domain (`features/<domain>/i18n/{en,es}.json`) plus `common` i
 | [Factory](https://refactoring.guru/design-patterns/factory-method) | Query key factories, `clubsQueryOptions(params)`, `createStyles(theme)` |
 | [Strategy](https://refactoring.guru/design-patterns/strategy) | Storage engine per key (MMKV or SecureStore), light / dark theme |
 | [Command](https://refactoring.guru/design-patterns/command) | Mutation hooks |
+| [Observer](https://refactoring.guru/design-patterns/observer) | `config/auth.ts` subscribes to the session store; `Stack.Protected` re-renders from it |
+| [Seam](https://martinfowler.com/bliki/LegacySeam.html) | `features/auth/api/session/*.api.ts` call the mock today, the real backend tomorrow |
 | [No barrel files](https://tkdodo.eu/blog/please-stop-using-barrel-files) | No `index.ts` under `src/`, lint-enforced |

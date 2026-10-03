@@ -1,0 +1,16 @@
+{
+  "profile": {
+    "title": "Perfil",
+    "openDetail": "Abrir una pantalla de detalle",
+    "openDetailHint": "Se apila por encima de las tabs",
+    "openSheet": "Abrir un sheet",
+    "openSheetHint": "Form sheet nativo con detents"
+  },
+  "settings": {
+    "title": "Ajustes",
+    "account": "Cuenta",
+    "notifications": "Notificaciones",
+    "privacy": "Privacidad",
+    "about": "Acerca de"
+  }
+}

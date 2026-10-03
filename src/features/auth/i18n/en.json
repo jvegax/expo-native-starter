@@ -1,0 +1,36 @@
+{
+  "signIn": {
+    "title": "Sign in",
+    "subtitle": "Welcome back. Use any email and a password of 6+ characters.",
+    "submit": "Sign in",
+    "noAccount": "Don't have an account?",
+    "goToSignUp": "Create account"
+  },
+  "signUp": {
+    "title": "Create account",
+    "subtitle": "This is a mock: no data leaves the device.",
+    "submit": "Create account",
+    "haveAccount": "Already have an account?",
+    "goToSignIn": "Sign in"
+  },
+  "fields": {
+    "name": "Name",
+    "email": "Email",
+    "password": "Password"
+  },
+  "validation": {
+    "required": "Required",
+    "invalidEmail": "Enter a valid email",
+    "passwordTooShort": "At least {{count}} characters"
+  },
+  "errors": {
+    "invalidCredentials": "Incorrect email or password",
+    "emailTaken": "An account with this email already exists"
+  },
+  "signOut": {
+    "label": "Sign out",
+    "confirmTitle": "Sign out?",
+    "confirmMessage": "You will need to sign in again to use the app.",
+    "confirm": "Sign out"
+  }
+}

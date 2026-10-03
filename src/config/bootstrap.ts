@@ -1,5 +1,6 @@
 import '@/config/i18n/i18n';
 
+import { setupAuth } from '@/config/auth';
 import { setupHttp } from '@/config/http';
 import { setupQueryManagers } from '@/config/query-managers';
 import { initializeCriticalSdks, scheduleDeferredSdks } from '@/config/sdks/initialize-sdks';
@@ -12,6 +13,7 @@ export function bootstrap(): void {
   performance.mark('bootstrap:start');
   initializeCriticalSdks();
   setupHttp();
+  setupAuth();
   setupQueryManagers();
   scheduleDeferredSdks();
   performance.mark('bootstrap:end');

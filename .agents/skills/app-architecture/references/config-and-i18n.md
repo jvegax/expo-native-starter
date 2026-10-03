@@ -9,10 +9,11 @@
 | `query-client.ts` | The single `QueryClient` and its defaults (staleTime, retry policy, `gcTime` = `QUERY_CACHE_MAX_AGE` so persisted queries are not collected first). |
 | `query-persister.ts` | `queryPersister` (TanStack async-storage persister over `persistStorage`, i.e. MMKV, key `STORAGE_KEYS.queryCache`, throttled to 1 s) and `QUERY_CACHE_MAX_AGE` (24 h). |
 | `query-managers.ts` | `setupQueryManagers()`: `focusManager` follows `AppState`, `onlineManager` follows `expo-network`, so queries refetch on foreground and pause offline. |
-| `http.ts` | `setupHttp()` wires `baseUrl`, the token getter and the 401 handler into the shared http client. |
+| `http.ts` | `setupHttp()` wires `baseUrl`, the token getter (`useSessionStore.getState().token`) and the 401 handler (`clearSession()`) into the shared http client. |
+| `auth.ts` | `setupAuth()` subscribes to the session store and, on every signed-in → signed-out transition (sign out button, 401, auth SDK), clears the query cache and its persisted copy. Per-user cleanup goes here. |
 | `i18n/` | `languages.ts` (supported list), `resources.ts` (namespace registry), `i18n.ts` (i18next instance). |
 | `sdks/` | One file per third-party SDK + `initialize-sdks.ts` registry. See `src/config/sdks/README.md`. |
-| `bootstrap.ts` | Runs once from `src/app/_layout.tsx` at module scope, between `performance.mark('bootstrap:start')` and `'bootstrap:end'`: i18n import, `initializeCriticalSdks()` (first, so crash reporting observes the rest), `setupHttp()`, `setupQueryManagers()`, `scheduleDeferredSdks()`. Synchronous and on the startup path: keep it short. |
+| `bootstrap.ts` | Runs once from `src/app/_layout.tsx` at module scope, between `performance.mark('bootstrap:start')` and `'bootstrap:end'`: i18n import, `initializeCriticalSdks()` (first, so crash reporting observes the rest), `setupHttp()`, `setupAuth()`, `setupQueryManagers()`, `scheduleDeferredSdks()`. Synchronous and on the startup path: keep it short. |
 
 `config/` may import a feature's `i18n/` and `store/` folders (it composes them) but features, components and screens never import `config/` beyond `env` and `app`.
 
@@ -45,7 +46,7 @@ The theme provider picks `lightTheme`/`darkTheme` from `useColorScheme()`, wraps
 ## i18n
 
 - Library: i18next + react-i18next. Language on startup: the one saved under `STORAGE_KEYS.language` (read synchronously, so the first frame is already in that language), else the device language from `expo-localization`, else `en`.
-- One namespace per domain (`features/<d>/i18n/{en,es}.json`) plus `common` (`shared/i18n`). Keys inside a domain namespace are grouped by entity (`club.listTitle`, `member.invite`). Components and screens use the namespace of their domain.
+- One namespace per domain (`features/<d>/i18n/{en,es}.json`: `home`, `club`, `auth`, `account`) plus `common` (`shared/i18n`; tab and drawer labels live under `common:navigation.*`). Keys inside a domain namespace are grouped by entity (`club.listTitle`, `member.invite`). Components and screens use the namespace of their domain.
 - Keys are typed from `resources.ts` through `src/types/i18next.d.ts`: a misspelled key fails `tsc`.
 
 ### Using translations
@@ -55,6 +56,7 @@ const { t } = useTranslation('club');
 t('club.membersCount', { count: club.membersCount });      // plural: membersCount_one / membersCount_other
 t('welcome.title', { appName: appConfig.name });           // interpolation
 const { t: tCommon } = useTranslation('common');           // second namespace in the same component
+const { t } = useTranslation(['auth', 'common']);          // or several: t('signIn.title'), t('common:actions.cancel')
 ```
 
 Shared UI (`AsyncState`, future dialogs) uses only the `common` namespace.

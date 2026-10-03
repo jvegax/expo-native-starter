@@ -1,0 +1,16 @@
+{
+  "profile": {
+    "title": "Profile",
+    "openDetail": "Open a detail screen",
+    "openDetailHint": "Pushed over the tabs",
+    "openSheet": "Open a sheet",
+    "openSheetHint": "Native form sheet with detents"
+  },
+  "settings": {
+    "title": "Settings",
+    "account": "Account",
+    "notifications": "Notifications",
+    "privacy": "Privacy",
+    "about": "About"
+  }
+}

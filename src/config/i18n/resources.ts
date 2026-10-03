@@ -1,3 +1,5 @@
+import { accountResources } from '@/features/account/i18n/resources';
+import { authResources } from '@/features/auth/i18n/resources';
 import { clubResources } from '@/features/club/i18n/resources';
 import { homeResources } from '@/features/home/i18n/resources';
 import { commonResources } from '@/shared/i18n/resources';
@@ -11,10 +13,14 @@ export const resources = {
     common: commonResources.en,
     home: homeResources.en,
     club: clubResources.en,
+    auth: authResources.en,
+    account: accountResources.en,
   },
   es: {
     common: commonResources.es,
     home: homeResources.es,
     club: clubResources.es,
+    auth: authResources.es,
+    account: accountResources.es,
   },
 } as const;

@@ -4,9 +4,13 @@ import type { Theme } from '@/shared/theme/theme.types';
 
 export const createStyles = (theme: Theme) =>
   StyleSheet.create({
-    content: {
-      flex: 1,
+    button: {
+      width: theme.sizes.touchTarget,
+      height: theme.sizes.touchTarget,
+      alignItems: 'center',
       justifyContent: 'center',
-      paddingVertical: theme.spacing.xl,
+    },
+    pressed: {
+      opacity: 0.5,
     },
   });

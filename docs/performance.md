@@ -26,7 +26,7 @@ Check it works: Metro prints `React Compiler enabled`, and React Native DevTools
 2. Hermes maps the bytecode bundle. Release builds use inline requires, so modules load on first use.
 3. Expo Router evaluates every `_layout.tsx` module. The root layout calls `bootstrap()`.
 4. Providers mount; the persisted query cache is restored from MMKV.
-5. The first screen renders and Expo Router hides the splash. The home screen calls `markScreenInteractive('home')`.
+5. The root navigator reads the session (already in memory: the session store read SecureStore and MMKV synchronously at import), renders home or sign-in, and Expo Router hides the splash. That first screen calls `markScreenInteractive('home' | 'sign-in')`.
 6. Deferred SDKs run in `requestIdleCallback` (at most 3 s later).
 
 Rules for the startup path:
@@ -41,10 +41,14 @@ Rules for the startup path:
 ## Navigation and native feel
 
 - Navigation theme built from our tokens (`shared/theme/navigation-theme.ts`): no white header or white flash in dark mode.
-- The root `<Stack>` sets `freezeOnBlur: true`, so hidden screens stop re-rendering.
-- The club list uses an iOS large title that collapses as the list scrolls.
+- The app and section stacks set `freezeOnBlur: true`, so hidden screens stop re-rendering.
+- Tabs are `NativeTabs` (`expo-router/unstable-native-tabs`): the platform tab bar, Liquid Glass and minimize-on-scroll on iOS 26, Material on Android. Every tab mounts at start, so a tab with heavy work defers it with `useIsFocused` / `useFocusEffect`.
+- Each tab and drawer item is its own native Stack with an iOS large title. The first native child must be the scroll view (`<ScrollScreen>` or `<List>`), so the title collapses, content clears the tab bar and the bar minimizes.
+- The drawer uses `drawerType: 'front'` (the native tab bar does not slide) and swipes open on Android only; on iOS the edge swipe stays the back gesture.
+- Icons are SF Symbols on iOS and Material Symbols on Android (`<Icon>`, expo-symbols). On Android expo-symbols draws them with the Material Symbols font, loaded on first use, so an icon can appear a frame after its screen. Icons are decorative: the surrounding control carries the accessibility label.
+- Sign-out confirmation is a native `Alert` with a destructive action.
 - `Button` and `ClubCard` use the native Android ripple and a `pressed` style on iOS, without re-rendering on press.
-- For tabs prefer `NativeTabs` (`expo-router/unstable-native-tabs`); for sheets, `presentation: 'formSheet'` with `sheetAllowedDetents`.
+- Sheets use `presentation: 'formSheet'` with `sheetAllowedDetents` (see `/sheet` in `AppStackLayout`).
 - Predictive back is off until react-native-screens supports its animations.
 
 ## Data, lists and images

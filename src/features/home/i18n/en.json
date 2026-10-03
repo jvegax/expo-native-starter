@@ -8,5 +8,19 @@
     "title": "Page not found",
     "message": "This screen does not exist.",
     "goHome": "Go home"
+  },
+  "items": {
+    "title": "Explore navigation",
+    "rowTitle": "Item {{id}}",
+    "rowSubtitle": "Opens a detail screen with no data"
+  },
+  "item": {
+    "title": "Item {{id}}",
+    "body": "A mocked detail screen with no data. It was pushed onto the app stack, above the drawer and the tabs, so it covers the tab bar and swipes back natively.",
+    "openNext": "Open item {{id}}",
+    "openSheet": "Open sheet",
+    "sheetTitle": "Native sheet",
+    "sheetBody": "A form sheet with detents and a grabber. Drag it up or down, or close it.",
+    "close": "Close"
   }
 }

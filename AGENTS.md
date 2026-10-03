@@ -34,7 +34,23 @@ Run lint and typecheck before declaring any task done.
 
 - Use **Expo Router** for all navigation. Routes live in `src/app/` — every file there is a screen, `_layout.tsx` files define navigators. Keep non-route code (components, hooks, utils) outside `src/app/`.
 - Import `Link`, `router`, and `useLocalSearchParams` from `expo-router`.
-- Docs: https://docs.expo.dev/router/introduction.md
+- The app ships a full native shell. Before touching routes, layouts, tabs, the drawer or auth, load the `navigation-auth` skill (`.agents/skills/navigation-auth/SKILL.md`, symlinked from `.claude/skills/`).
+
+```
+src/app/_layout.tsx                 root Stack = the auth gate (RootNavigator)
+├── (auth)/  sign-in, sign-up       Stack.Protected guard={!isSignedIn}
+└── (app)/                          Stack.Protected guard={isSignedIn}; App Stack
+    ├── details/[id], sheet         pushed over drawer + tabs; modals and sheets
+    └── (drawer)/                   Drawer (expo-router/drawer)
+        ├── settings/               drawer item, own Stack
+        └── (tabs)/                 NativeTabs: (home), clubs, profile — each its own Stack
+```
+
+- **Auth gate:** only `src/screens/navigation/root/root-navigator.tsx` decides signed in vs out, with `Stack.Protected` reading `useSessionStore(selectIsSignedIn)`. Never redirect with `router.replace` after sign in/out; flipping the session does it. Auth is **mocked** behind `src/features/auth/api/session/*.api.ts`: plugging in a real backend stays inside `src/features/auth` (api bodies, a DTO/mapper, deleting the mock) plus `src/config` for an SDK; screens, navigators and the store contract do not change (`.agents/skills/navigation-auth/references/swap-to-real-auth.md`).
+- **Layouts that need app state** live in `src/screens/navigation/<navigator>/*-layout.tsx` and are re-exported by `_layout.tsx` (routes may not import `features/`).
+- **Native tabs:** `NativeTabs` from `expo-router/unstable-native-tabs` (SDK 57). Only `NativeTabs.Trigger` children count (never `Stack.Protected` inside), trigger `name` = folder name, at most 5 visible tabs on Android, every tab mounts at start.
+- **Drawer:** `expo-router/drawer` is built in. Never install `@react-navigation/*` packages: React Navigation is vendored inside expo-router 57.
+- Docs: https://docs.expo.dev/router/introduction.md, https://docs.expo.dev/router/advanced/native-tabs/, https://docs.expo.dev/router/advanced/protected/
 
 ## Building with EAS
 
@@ -44,6 +60,7 @@ Docs: https://docs.expo.dev/eas/index.md
 ## Rules
 
 - Before creating or changing anything under `src/` (feature, entity, screen, route, component, hook, API call, query, mutation, store, translation, theme, config, SDK), load the `app-architecture` skill (`.agents/skills/app-architecture/SKILL.md`, symlinked from `.claude/skills/`) and follow it. The `club` domain (`src/features/club`, `src/components/club`, `src/screens/club`) is the reference implementation.
+- Before adding or changing a route, `_layout.tsx`, tab, drawer item, modal/sheet, deep link, or anything in the sign-in / sign-up / sign-out flow or the session store, also load the `navigation-auth` skill (`.agents/skills/navigation-auth/SKILL.md`).
 - Every import uses the `@/` alias and points at the declaring file. No relative imports (`./`, `../`), no `index.ts` barrels, no `export * from`. ESLint enforces all three.
 - Lists always use `<List>` from `@/shared/ui/list/list` (LegendList). `FlatList`/`SectionList`/`VirtualizedList` are lint errors. Images always use `<Image>` from `@/shared/ui/image/image` (expo-image); `Image`/`ImageBackground` from `react-native` are lint errors.
 - The React Compiler is on (`experiments.reactCompiler` in `app.config.ts`). Do not add `useMemo`, `useCallback` or `React.memo` for performance, and never `eslint-disable` a hooks rule (the compiler skips that code). Performance rules, startup path and native-feel patterns: `docs/performance.md`.

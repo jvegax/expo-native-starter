@@ -6,4 +6,6 @@ export const sizes = {
   avatarMd: 48,
   avatarLg: 72,
   touchTarget: 44,
+  /** Two-line settings-style row (ListRow). */
+  listRow: 60,
 } as const;

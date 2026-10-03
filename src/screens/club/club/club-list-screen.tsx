@@ -32,7 +32,9 @@ export function ClubListScreen() {
   };
 
   return (
-    <Screen>
+    // No bottom edge: the List insets itself above the tab bar (contentInsetAdjustmentBehavior on
+    // iOS, native padding from NativeTabs on Android) and scrolls under it.
+    <Screen edges={['left', 'right']}>
       {/* Large title (iOS) collapses when the List scrolls (it defaults to contentInsetAdjustmentBehavior="automatic"). */}
       <Stack.Screen
         options={{ title: t('club.listTitle'), headerLargeTitleEnabled: true, headerLargeTitleShadowVisible: false }}

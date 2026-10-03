@@ -11,5 +11,12 @@
   "states": {
     "loading": "Loading…",
     "empty": "Nothing here yet"
+  },
+  "navigation": {
+    "home": "Home",
+    "clubs": "Clubs",
+    "profile": "Profile",
+    "settings": "Settings",
+    "openMenu": "Open menu"
   }
 }

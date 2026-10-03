@@ -2,12 +2,15 @@
 
 Expo starter for iOS and Android apps that open fast and feel native, not like a web page in a wrapper.
 
-- **Native first.** New Architecture, Hermes V1, native stack, Material ripple on Android, large titles on iOS, themed splash, no white flashes in dark mode.
+- **Native first.** New Architecture, Hermes V1, native stack, native tabs (Liquid Glass on iOS 26, Material on Android), drawer, form sheets, SF Symbols / Material Symbols, Material ripple on Android, large titles on iOS, themed splash, no white flashes in dark mode.
+- **Auth shell included.** Sign in, sign up and sign out with a protected stack (`Stack.Protected`): nothing in the app is reachable signed out. The backend is mocked behind three api functions; plugging in real auth stays inside `features/auth` (and `config/` for an SDK), with no change to screens or navigation.
 - **Fast by default.** React Compiler, synchronous storage (MMKV) on the first frame, persisted query cache, deferred SDK init, tree shaking and R8 in release builds.
 - **Structure that scales.** Folders split by domain and entity, explicit `@/` imports, no barrels, ESLint boundaries that keep it that way.
 - **Ready to ship.** Two environments (`preview`, `production`), EAS build and submit profiles, typed i18n in English and Spanish.
 
 The example domain is clubs and their members. Replace it with yours and keep the rules.
+
+Mock credentials: any email with a password of 6+ characters. `error@example.com` fails sign in; `taken@example.com` is already registered.
 
 ## Quick start
 
@@ -26,7 +29,7 @@ The app never runs in Expo Go (MMKV and Nitro Modules are native), always in a d
 | Concern | Choice |
 | --- | --- |
 | Runtime | Expo SDK 57, React Native 0.86, React 19.2, React Compiler |
-| Navigation | Expo Router (typed routes, native stack) |
+| Navigation | Expo Router (typed routes, native stack, `NativeTabs`, drawer, `Stack.Protected` auth gate) |
 | Server state | TanStack Query v5 with an opt-in persisted cache |
 | Client state | Zustand |
 | Storage | MMKV v4 + expo-secure-store for secrets |
@@ -39,7 +42,7 @@ The app never runs in Expo Go (MMKV and Nitro Modules are native), always in a d
 ```
 src/
 ├── app/          Expo Router routes only; each file renders a screen
-├── screens/      <domain>/<entity>/ — fetch data and compose components
+├── screens/      <domain>/<entity>/ — fetch data and compose components; navigation/ holds the navigators
 ├── components/   <domain>/<entity>/ — domain UI, pure props in, JSX out
 ├── features/     <domain>/<layer>/<entity>/ — api, queries, mutations, types, store, i18n
 ├── shared/       generic code: design system, theme, http, storage, utils
@@ -57,6 +60,18 @@ Four rules, all enforced by ESLint:
 A read is four small files: `api/` calls the HTTP client, `types/*.mappers.ts` turns the DTO into a domain type, `queries/` wraps it in `queryOptions`, and the screen calls the hook. A write is a mutation hook that calls `api/` and invalidates the affected query keys.
 
 The `club` domain is the reference implementation. Full rules, dependency table and patterns: [docs/architecture.md](docs/architecture.md).
+
+## Navigation and auth
+
+```
+Root Stack (auth gate)
+├── (auth)  sign-in, sign-up                         signed out only
+└── (app)   details/[id], sheet                      signed in only
+    └── Drawer: settings
+        └── NativeTabs: Home, Clubs, Profile         one native Stack per tab
+```
+
+The session is read synchronously at launch, so the app opens straight on home or sign-in. Signing in or out only updates the session store; the protected stack swaps screens by itself. To connect a real backend or an auth SDK, follow `.agents/skills/navigation-auth/references/swap-to-real-auth.md`.
 
 ## Performance
 
@@ -108,7 +123,7 @@ Adding, removing or upgrading a library with native code needs a new development
 
 ## AI coding agents
 
-`AGENTS.md` is the entry point. `.agents/skills/app-architecture/` (symlinked from `.claude/skills/`) tells an agent where every file goes and which shared code already exists.
+`AGENTS.md` is the entry point. `.agents/skills/app-architecture/` (symlinked from `.claude/skills/`) tells an agent where every file goes and which shared code already exists; `.agents/skills/navigation-auth/` covers routes, the auth gate, tabs, the drawer and swapping in real auth.
 
 ## License
 

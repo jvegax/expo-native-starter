@@ -82,8 +82,18 @@ export const useClubFiltersStore = create<ClubFiltersState & ClubFiltersActions>
 
 - `persistStorage` (`@/shared/lib/storage/storage`) is the MMKV-only, string-keyed adapter with the `getItem/setItem/removeItem` shape zustand expects. It is **synchronous**, so `persist` hydrates while `create` runs: the persisted state is there on the first render, `useClubFiltersStore.persist.hasHydrated()` is already `true`, and no "hydrating" flag or splash delay is needed.
 - Add every persisted key to `STORAGE_KEYS` in `src/shared/constants/storage-keys.ts`; never pass a literal string as `name`.
-- **Never persist secrets through `persistStorage`** (it writes to MMKV, not the keychain). A token is stored with `storage.set(STORAGE_KEYS.authToken, token)` / `storage.get(...)`: keys in `SECRET_KEYS` go to expo-secure-store. A session store keeps the token out of `partialize` and reads or writes it through `storage`.
+- **Never persist secrets through `persistStorage`** (it writes to MMKV, not the keychain). A token is stored with `storage.set(STORAGE_KEYS.authToken, token)` / `storage.get(...)`: keys in `SECRET_KEYS` go to expo-secure-store. A store that holds a secret does not use `persist` at all; see "Reference store: the session" below.
 - Engines are swapped inside `src/shared/lib/storage/storage.ts` only; stores and features never import MMKV or SecureStore.
+
+## Reference store: the session
+
+`features/auth/store/session/session.store.ts` (`useSessionStore`) is the real example of a persisted store that holds a secret, so it does **not** use `persist`:
+
+- `session.storage.ts` next to it reads and writes through `storage` by hand: the token under `STORAGE_KEYS.authToken` (a `SECRET_KEY`, so SecureStore) and the user as JSON under `STORAGE_KEYS.authUser` (MMKV). Unreadable or half-missing data counts as signed out.
+- `create` seeds the state from `readStoredSession()`, synchronously, so the first render already knows the session.
+- Actions write storage and state together (`setSession`, `clearSession`); nothing else touches those keys.
+- Exported selectors (`selectIsSignedIn`, `selectUser`, `selectToken`) are the public contract; the root navigator, `config/http.ts` and `config/auth.ts` read state through them, not through the state shape.
+- Code outside React subscribes with `useSessionStore.subscribe((state, previous) => ...)` (see `src/config/auth.ts`).
 
 ## Exposure
 

@@ -1,19 +1,18 @@
-import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 
 import { bootstrap } from '@/config/bootstrap';
 import { AppProviders } from '@/providers/app-providers';
+import { RootNavigator } from '@/screens/navigation/root/root-navigator';
 
-// Module scope: runs once before any route renders (http config, i18n, SDKs).
+// Module scope: runs once before any route renders (http config, i18n, auth, SDKs).
 bootstrap();
 
 export default function RootLayout() {
   return (
     <AppProviders>
       <StatusBar style="auto" />
-      {/* freezeOnBlur: on Fabric, screens two or more levels below the top stop re-rendering; the one
-          right below stays live so the back gesture and its animations work. */}
-      <Stack screenOptions={{ headerBackButtonDisplayMode: 'minimal', freezeOnBlur: true }} />
+      {/* Root Stack with the auth gate (Stack.Protected): (app) when signed in, (auth) otherwise. */}
+      <RootNavigator />
     </AppProviders>
   );
 }

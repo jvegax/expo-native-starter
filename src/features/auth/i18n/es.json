@@ -1,0 +1,36 @@
+{
+  "signIn": {
+    "title": "Iniciar sesión",
+    "subtitle": "Hola de nuevo. Usa cualquier email y una contraseña de 6 o más caracteres.",
+    "submit": "Iniciar sesión",
+    "noAccount": "¿No tienes cuenta?",
+    "goToSignUp": "Crear cuenta"
+  },
+  "signUp": {
+    "title": "Crear cuenta",
+    "subtitle": "Es un mock: ningún dato sale del dispositivo.",
+    "submit": "Crear cuenta",
+    "haveAccount": "¿Ya tienes cuenta?",
+    "goToSignIn": "Iniciar sesión"
+  },
+  "fields": {
+    "name": "Nombre",
+    "email": "Email",
+    "password": "Contraseña"
+  },
+  "validation": {
+    "required": "Obligatorio",
+    "invalidEmail": "Introduce un email válido",
+    "passwordTooShort": "Al menos {{count}} caracteres"
+  },
+  "errors": {
+    "invalidCredentials": "Email o contraseña incorrectos",
+    "emailTaken": "Ya existe una cuenta con este email"
+  },
+  "signOut": {
+    "label": "Cerrar sesión",
+    "confirmTitle": "¿Cerrar sesión?",
+    "confirmMessage": "Tendrás que volver a iniciar sesión para usar la app.",
+    "confirm": "Cerrar sesión"
+  }
+}
