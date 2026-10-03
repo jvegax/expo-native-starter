@@ -1,5 +1,4 @@
 import { router, Stack } from 'expo-router';
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
@@ -7,33 +6,35 @@ import { useSignUpMutation } from '@/features/auth/mutations/session/sign-up.mut
 import type { SignUpInput } from '@/features/auth/types/session/session.types';
 import {
   authErrorCode,
-  type CredentialErrors,
+  normalizeSignUp,
   PASSWORD_MIN_LENGTH,
   validateSignUp,
 } from '@/features/auth/utils/session/validate-credentials';
 import { AuthFormScroll } from '@/screens/auth/session/auth-form-scroll';
 import { createStyles } from '@/screens/auth/session/auth-screens.styles';
+import { useUncontrolledForm } from '@/shared/hooks/use-uncontrolled-form';
 import { useStyles } from '@/shared/theme/use-styles';
 import { Button } from '@/shared/ui/button/button';
 import { Text } from '@/shared/ui/text/text';
 import { TextField } from '@/shared/ui/text-field/text-field';
 
+// Key order is the field order: an invalid submit focuses the first failing field.
+const INITIAL_VALUES: SignUpInput = { name: '', email: '', password: '' };
+
 export function SignUpScreen() {
   const styles = useStyles(createStyles);
   const { t } = useTranslation(['auth', 'common']);
   const signUp = useSignUpMutation();
-  const [form, setForm] = useState<SignUpInput>({ name: '', email: '', password: '' });
-  const [errors, setErrors] = useState<CredentialErrors<SignUpInput>>({});
+  const { field, errors, submit } = useUncontrolledForm({
+    initialValues: INITIAL_VALUES,
+    validate: validateSignUp,
+    onSubmit: (input) => signUp.mutate(normalizeSignUp(input)),
+    isSubmitting: signUp.isPending,
+  });
 
-  const fieldError = (field: keyof SignUpInput) => {
-    const key = errors[field];
+  const fieldError = (name: keyof SignUpInput) => {
+    const key = errors[name];
     return key ? t(`validation.${key}`, { count: PASSWORD_MIN_LENGTH }) : null;
-  };
-
-  const submit = () => {
-    const invalid = validateSignUp(form);
-    setErrors(invalid ?? {});
-    if (!invalid) signUp.mutate(form);
   };
 
   const errorCode = signUp.isError ? authErrorCode(signUp.error) : null;
@@ -45,34 +46,28 @@ export function SignUpScreen() {
       <View style={styles.fields}>
         <TextField
           label={t('fields.name')}
-          value={form.name}
-          onChangeText={(name) => setForm((prev) => ({ ...prev, name }))}
+          {...field('name', { next: 'email' })}
           error={fieldError('name')}
+          autoCapitalize="words"
+          autoCorrect={false}
           autoComplete="name"
-          textContentType="name"
-          returnKeyType="next"
         />
         <TextField
           label={t('fields.email')}
-          value={form.email}
-          onChangeText={(email) => setForm((prev) => ({ ...prev, email }))}
+          {...field('email', { next: 'password' })}
           error={fieldError('email')}
-          autoCapitalize="none"
-          autoComplete="email"
           keyboardType="email-address"
-          textContentType="emailAddress"
-          returnKeyType="next"
+          autoCapitalize="none"
+          autoCorrect={false}
+          spellCheck={false}
+          autoComplete="username"
         />
         <TextField
           label={t('fields.password')}
-          value={form.password}
-          onChangeText={(password) => setForm((prev) => ({ ...prev, password }))}
+          {...field('password')}
           error={fieldError('password')}
           secureTextEntry
           autoComplete="new-password"
-          textContentType="newPassword"
-          returnKeyType="go"
-          onSubmitEditing={submit}
         />
       </View>
       {signUp.isError ? (

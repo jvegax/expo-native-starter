@@ -37,6 +37,15 @@ export function validateSignUp(input: SignUpInput): CredentialErrors<SignUpInput
   });
 }
 
+/** What the api receives: surrounding spaces removed. Passwords are sent exactly as typed. */
+export function normalizeSignIn(input: SignInInput): SignInInput {
+  return { email: input.email.trim(), password: input.password };
+}
+
+export function normalizeSignUp(input: SignUpInput): SignUpInput {
+  return { name: input.name.trim(), email: input.email.trim(), password: input.password };
+}
+
 /** The AuthError code to translate (`auth:errors.<code>`), or null for unexpected errors (generic message). */
 export function authErrorCode(error: unknown): AuthErrorCode | null {
   return error instanceof AuthError ? error.code : null;

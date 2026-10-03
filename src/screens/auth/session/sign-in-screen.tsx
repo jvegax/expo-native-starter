@@ -1,5 +1,5 @@
 import { router, Stack } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
@@ -7,40 +7,42 @@ import { useSignInMutation } from '@/features/auth/mutations/session/sign-in.mut
 import type { SignInInput } from '@/features/auth/types/session/session.types';
 import {
   authErrorCode,
-  type CredentialErrors,
+  normalizeSignIn,
   PASSWORD_MIN_LENGTH,
   validateSignIn,
 } from '@/features/auth/utils/session/validate-credentials';
 import { AuthFormScroll } from '@/screens/auth/session/auth-form-scroll';
 import { createStyles } from '@/screens/auth/session/auth-screens.styles';
+import { useUncontrolledForm } from '@/shared/hooks/use-uncontrolled-form';
 import { markScreenInteractive } from '@/shared/lib/perf/startup-metrics';
 import { useStyles } from '@/shared/theme/use-styles';
 import { Button } from '@/shared/ui/button/button';
 import { Text } from '@/shared/ui/text/text';
 import { TextField } from '@/shared/ui/text-field/text-field';
 
+// Key order is the field order: an invalid submit focuses the first failing field.
+const INITIAL_VALUES: SignInInput = { email: '', password: '' };
+
 export function SignInScreen() {
   const styles = useStyles(createStyles);
   const { t } = useTranslation(['auth', 'common']);
   const signIn = useSignInMutation();
-  const [form, setForm] = useState<SignInInput>({ email: '', password: '' });
-  const [errors, setErrors] = useState<CredentialErrors<SignInInput>>({});
+  // On success the session store flips the root guard; the navigator leaves this screen by itself.
+  const { field, errors, submit } = useUncontrolledForm({
+    initialValues: INITIAL_VALUES,
+    validate: validateSignIn,
+    onSubmit: (input) => signIn.mutate(normalizeSignIn(input)),
+    isSubmitting: signIn.isPending,
+  });
 
   // First screen after a signed-out launch: its first commit is the app's time to interactive.
   useEffect(() => {
     markScreenInteractive('sign-in');
   }, []);
 
-  const fieldError = (field: keyof SignInInput) => {
-    const key = errors[field];
+  const fieldError = (name: keyof SignInInput) => {
+    const key = errors[name];
     return key ? t(`validation.${key}`, { count: PASSWORD_MIN_LENGTH }) : null;
-  };
-
-  const submit = () => {
-    const invalid = validateSignIn(form);
-    setErrors(invalid ?? {});
-    // On success the session store flips the root guard; the navigator leaves this screen by itself.
-    if (!invalid) signIn.mutate(form);
   };
 
   const errorCode = signIn.isError ? authErrorCode(signIn.error) : null;
@@ -52,25 +54,20 @@ export function SignInScreen() {
       <View style={styles.fields}>
         <TextField
           label={t('fields.email')}
-          value={form.email}
-          onChangeText={(email) => setForm((prev) => ({ ...prev, email }))}
+          {...field('email', { next: 'password' })}
           error={fieldError('email')}
-          autoCapitalize="none"
-          autoComplete="email"
           keyboardType="email-address"
-          textContentType="emailAddress"
-          returnKeyType="next"
+          autoCapitalize="none"
+          autoCorrect={false}
+          spellCheck={false}
+          autoComplete="username"
         />
         <TextField
           label={t('fields.password')}
-          value={form.password}
-          onChangeText={(password) => setForm((prev) => ({ ...prev, password }))}
+          {...field('password')}
           error={fieldError('password')}
           secureTextEntry
           autoComplete="current-password"
-          textContentType="password"
-          returnKeyType="go"
-          onSubmitEditing={submit}
         />
       </View>
       {signIn.isError ? (

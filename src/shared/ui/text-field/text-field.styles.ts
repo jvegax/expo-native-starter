@@ -8,7 +8,10 @@ export const createStyles = (theme: Theme) =>
       gap: theme.spacing.xs,
     },
     input: {
-      ...theme.textVariants.body,
+      // Size and weight only: a lineHeight on a TextInput adds a paragraph style to the native text,
+      // which iOS compares on every update. Error state changes the border, never text attributes.
+      fontSize: theme.textVariants.body.fontSize,
+      fontWeight: theme.textVariants.body.fontWeight,
       color: theme.colors.text,
       backgroundColor: theme.colors.surface,
       borderWidth: 1,
