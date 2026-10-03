@@ -10,11 +10,11 @@ import {
   PASSWORD_MIN_LENGTH,
   validateSignUp,
 } from '@/features/auth/utils/session/validate-credentials';
-import { AuthFormScroll } from '@/screens/auth/session/auth-form-scroll';
 import { createStyles } from '@/screens/auth/session/auth-screens.styles';
 import { useUncontrolledForm } from '@/shared/hooks/use-uncontrolled-form';
 import { useStyles } from '@/shared/theme/use-styles';
 import { Button } from '@/shared/ui/button/button';
+import { FormScrollScreen } from '@/shared/ui/form-scroll-screen/form-scroll-screen';
 import { Text } from '@/shared/ui/text/text';
 import { TextField } from '@/shared/ui/text-field/text-field';
 
@@ -40,7 +40,7 @@ export function SignUpScreen() {
   const errorCode = signUp.isError ? authErrorCode(signUp.error) : null;
 
   return (
-    <AuthFormScroll>
+    <FormScrollScreen>
       <Stack.Screen options={{ title: t('signUp.title') }} />
       <Text color="textMuted">{t('signUp.subtitle')}</Text>
       <View style={styles.fields}>
@@ -80,6 +80,6 @@ export function SignUpScreen() {
         <Text color="textMuted">{t('signUp.haveAccount')}</Text>
         <Button label={t('signUp.goToSignIn')} variant="ghost" size="sm" onPress={() => router.back()} />
       </View>
-    </AuthFormScroll>
+    </FormScrollScreen>
   );
 }

@@ -38,11 +38,62 @@ const rnImages = {
   message: 'Never use Image/ImageBackground from react-native. Use <Image> from "@/shared/ui/image/image" (expo-image).',
 };
 
-const basePatterns = [relativeImports, rnLists, rnImages, legendListDirect];
+// Inputs are uncontrolled <TextField>s and forms scroll in <FormScrollScreen>; the keyboard library is
+// reached only through those wrappers and src/providers (.claude/skills/forms-keyboard/SKILL.md).
+const rnTextInput = {
+  group: ['react-native'],
+  importNames: ['TextInput'],
+  message:
+    'Use <TextField> from "@/shared/ui/text-field/text-field" (uncontrolled; type refs as TextFieldHandle). See the forms-keyboard skill.',
+};
+const rnKeyboardAvoiding = {
+  group: ['react-native'],
+  importNames: ['KeyboardAvoidingView'],
+  message:
+    'KeyboardAvoidingView does not follow the keyboard on edge-to-edge Android. Use <FormScrollScreen> from "@/shared/ui/form-scroll-screen/form-scroll-screen".',
+};
+const keyboardControllerDirect = {
+  group: ['react-native-keyboard-controller', 'react-native-keyboard-controller/*'],
+  message:
+    'Keyboard UI goes through @/shared/ui wrappers (<FormScrollScreen>); only those folders and src/providers import react-native-keyboard-controller.',
+};
+
+const basePatterns = [
+  relativeImports,
+  rnLists,
+  rnImages,
+  legendListDirect,
+  rnTextInput,
+  rnKeyboardAvoiding,
+  keyboardControllerDirect,
+];
+const without = (...drop) => basePatterns.filter((pattern) => !drop.includes(pattern));
 
 const restricted = (patterns, base = basePatterns) => ({
   'no-restricted-imports': ['error', { patterns: [...base, ...patterns] }],
 });
+
+const noBarrels = {
+  // No barrel files: every module is imported by its own path.
+  selector: 'ExportAllDeclaration',
+  message: 'No barrel exports ("export * from"). Import each module by its own path.',
+};
+const keyboardInsetsOnce = {
+  selector: "JSXAttribute[name.name='automaticallyAdjustKeyboardInsets']",
+  message: 'Screens with inputs use <FormScrollScreen>, which already insets for the keyboard; a second mechanism double-pads and jumps.',
+};
+const restrictedSyntax = [
+  noBarrels,
+  keyboardInsetsOnce,
+  {
+    selector: "JSXAttribute[name.name='blurOnSubmit']",
+    message: 'blurOnSubmit is deprecated. useUncontrolledForm sets submitBehavior="submit" so the keyboard stays up between fields.',
+  },
+  {
+    selector: "MemberExpression[property.name='setNativeProps']",
+    message: 'Never write text or props imperatively. Inputs are uncontrolled: prefill with defaultValue, reset by remounting with a key.',
+  },
+];
 
 const sharedBoundary = {
   group: [...roots('@/features', '@/components', '@/screens', '@/app', '@/providers'), ...configExcept],
@@ -70,14 +121,7 @@ module.exports = defineConfig([
     files: ['src/**'],
     rules: {
       ...restricted([]),
-      // No barrel files: every module is imported by its own path.
-      'no-restricted-syntax': [
-        'error',
-        {
-          selector: 'ExportAllDeclaration',
-          message: 'No barrel exports ("export * from"). Import each module by its own path.',
-        },
-      ],
+      'no-restricted-syntax': ['error', ...restrictedSyntax],
     },
   },
   {
@@ -104,16 +148,33 @@ module.exports = defineConfig([
   {
     // The one place allowed to import @legendapp/list.
     files: ['src/shared/ui/list/**'],
-    rules: restricted([sharedBoundary], [relativeImports, rnLists, rnImages]),
+    rules: restricted([sharedBoundary], without(legendListDirect)),
   },
   {
+    // The one place allowed to render a react-native TextInput.
+    files: ['src/shared/ui/text-field/**'],
+    rules: restricted([sharedBoundary], without(rnTextInput)),
+  },
+  {
+    // The keyboard-aware form container: keyboard-controller on Android, native insets on iOS.
+    files: ['src/shared/ui/form-scroll-screen/**'],
+    rules: {
+      ...restricted([sharedBoundary], without(keyboardControllerDirect)),
+      'no-restricted-syntax': ['error', ...restrictedSyntax.filter((rule) => rule !== keyboardInsetsOnce)],
+    },
+  },
+  {
+    // KeyboardProvider is mounted here.
     files: ['src/providers/**'],
-    rules: restricted([
-      {
-        group: roots('@/features', '@/components', '@/screens', '@/app'),
-        message: 'providers/ must not depend on features, components, screens or routes.',
-      },
-    ]),
+    rules: restricted(
+      [
+        {
+          group: roots('@/features', '@/components', '@/screens', '@/app'),
+          message: 'providers/ must not depend on features, components, screens or routes.',
+        },
+      ],
+      without(keyboardControllerDirect),
+    ),
   },
   {
     files: ['src/config/**'],

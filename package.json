@@ -57,6 +57,7 @@
     "react-i18next": "^17.0.15",
     "react-native": "0.86.3",
     "react-native-gesture-handler": "~2.32.0",
+    "react-native-keyboard-controller": "1.22.6",
     "react-native-mmkv": "^4.3.2",
     "react-native-nitro-modules": "0.37.1",
     "react-native-reanimated": "4.5.1",
@@ -74,6 +75,13 @@
     "eslint": "^9.0.0",
     "eslint-config-expo": "~57.0.2",
     "typescript": "~6.0.3"
+  },
+  "expo": {
+    "install": {
+      "exclude": [
+        "react-native-keyboard-controller"
+      ]
+    }
   },
   "private": true,
   "overrides": {
