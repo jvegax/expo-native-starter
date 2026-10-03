@@ -46,6 +46,11 @@ const rnTextInput = {
   message:
     'Use <TextField> from "@/shared/ui/text-field/text-field" (uncontrolled; type refs as TextFieldHandle). See the forms-keyboard skill.',
 };
+const rnghTextInput = {
+  group: ['react-native-gesture-handler'],
+  importNames: ['TextInput'],
+  message: rnTextInput.message,
+};
 const rnKeyboardAvoiding = {
   group: ['react-native'],
   importNames: ['KeyboardAvoidingView'],
@@ -64,6 +69,7 @@ const basePatterns = [
   rnImages,
   legendListDirect,
   rnTextInput,
+  rnghTextInput,
   rnKeyboardAvoiding,
   keyboardControllerDirect,
 ];

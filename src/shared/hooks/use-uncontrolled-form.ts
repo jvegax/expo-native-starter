@@ -28,8 +28,10 @@ type UncontrolledFormOptions<T, E extends string> = {
  * autocorrect and IME composition behave natively. Only errors are React state.
  *
  * Spread `field(name, { next })` on each TextField: `next` chains the return key to the following
- * field without closing the keyboard; the last field submits. To reset or prefill, remount the form
- * component with a `key` (this hook resets with it); never pass `value` or call `clear()` on a field.
+ * field without closing the keyboard; the last field submits. field() owns ref, onChangeText and
+ * onSubmitEditing: to also react to the text, wrap its onChangeText instead of replacing it. To reset
+ * or prefill, remount the form component with a `key` (this hook resets with it); never pass `value`
+ * or call `clear()` on a field.
  */
 export function useUncontrolledForm<T extends Record<string, string>, E extends string>({
   initialValues,
@@ -77,5 +79,7 @@ export function useUncontrolledForm<T extends Record<string, string>, E extends 
     };
   };
 
-  return { field, errors, submit };
+  const focus = (name: keyof T) => inputs.current[name]?.focus();
+
+  return { field, errors, submit, focus };
 }
