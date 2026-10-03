@@ -29,7 +29,7 @@ src/
 └── types/          Ambient .d.ts only (env, i18next, tanstack-query registrations).
 ```
 
-Read `references/config-and-i18n.md` before touching `config/`, `providers/`, env vars, SDKs or translations. Load the `navigation-auth` skill before touching routes, `_layout.tsx` files, tabs, the drawer or the auth/session flow, and the `forms-keyboard` skill before building a form, an input or anything the keyboard can cover.
+Read `references/config-and-i18n.md` before touching `config/`, `providers/`, env vars, SDKs or translations. Load the `navigation-auth` skill before touching routes, `_layout.tsx` files, tabs, the drawer or the auth/session flow, and the `forms-keyboard` skill before building a form, an input or anything the keyboard can cover. Before building or restyling a screen or a user-visible component, also load the `expo-taste-skill` skill (Design Read, dials, archetype, taste tells, pre-flight): it owns how a view should look and read, this skill owns where its files go.
 
 ## Imports
 
@@ -200,3 +200,4 @@ Work is finished when all of these hold:
 - `references/state.md` — when Zustand is justified, the store template and persistence with `persistStorage`.
 - `references/config-and-i18n.md` — env, `app.config.ts`, bootstrap, providers, SDK registration (critical or deferred), adding languages and namespaces.
 - `.agents/skills/navigation-auth/SKILL.md` (separate skill) — route tree, auth gate, mocked session, drawer, native tabs, where a new screen goes.
+- `.agents/skills/expo-taste-skill/SKILL.md` (separate skill) — native taste: Design Read, dials, screen archetypes, composition and copy rules, taste tells T1-T20, pre-flight; `references/repo-bindings.md` maps it to this repo.
