@@ -1,6 +1,6 @@
 # Repo bindings: this app
 
-The ONLY repo-specific file in expo-taste-skill. To port the skill, replace this file with a filled copy of `repo-bindings.template.md` and nothing else. Where it disagrees with SKILL.md, another reference or a sibling skill, this file wins (it mirrors AGENTS.md "Design & motion"). Never write the product's brand name here: say "this app". Verified against commit 7cd6f67 (Expo SDK 57, RN 0.86, React Compiler on).
+The ONLY repo-specific file in expo-taste-skill. To port the skill, replace this file with a filled copy of `repo-bindings.template.md` and nothing else. Where it disagrees with SKILL.md, another reference or a sibling skill, this file wins (it mirrors AGENTS.md "Design & motion"). Never write the product's brand name here: say "this app". Verified against commit 7cd6f67 (Expo SDK 57, RN 0.86, React Compiler on). Edit it under the rules in maintenance.md section 3: no new line numbers, and any section you touch drops its old ones for symbols.
 
 ## 0. Grep variables
 

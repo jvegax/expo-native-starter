@@ -12,6 +12,16 @@ A screen is done when it looks like THIS app's screen, on THIS platform, for THI
 - **Portability.** Nothing in this file or in `references/` names a repo token, component or path. Every such noun resolves in [references/repo-bindings.md](references/repo-bindings.md), cited as "bindings §N".
 - **FIRST ACTION, every time:** read [references/repo-bindings.md](references/repo-bindings.md) and check it belongs to this project: the paths in its §0 exist here. If it is missing, or was copied from another app, create it from [references/repo-bindings.template.md](references/repo-bindings.template.md) following [references/design-bible.md](references/design-bible.md) ('Greenfield procedure') before building anything. Never apply another app's bindings.
 - **Platform facts** marked with an SDK version (sheets, large titles, menus) were verified for the SDK named in the bindings header. If the project's `expo` major differs, re-check them in that SDK's docs and record the result in bindings §2.
+- **Editing this skill or the bindings:** read [references/maintenance.md](references/maintenance.md) first. Its effectiveness is not measured yet, so its rules come before any new rule.
+
+## Light path and full path
+
+The skill is big on purpose for reviews and small on purpose for building. Load only what the job needs; the rest of the context belongs to the code.
+
+- **Light path (default for NEW and EXTEND):** this file + bindings §1-§4 (§0 only to run the greps, §6 or §9 only when the screen touches a gap or a debt screen) + the section of [references/archetypes.md](references/archetypes.md) for the chosen archetype. Run Steps 0-9 from this file: its lines are enough to decide. Step 9 on the light path = the grep sequence on the touched files, lint and typecheck, and the list of matrix cells not inspected; the full checklist in preflight.md is not ticked box by box. Open expo-design-system only for a token or component gap, expo-animation only if something moves or gives feedback.
+- **Full path:** GREENFIELD; REVIEW, POLISH, PRESERVE or OVERHAUL; a user saying it looks generic, AI-made or like a website; a Hub, Detail, Overview, Result or Onboarding screen at V>=5; or a light-path decision this file cannot settle (a cap conflict, a copy case, an unclear archetype). Then open the reference the step names, and only that one.
+- **Upgrade, never skip.** When the light path finds something it cannot resolve, open the one reference that owns it and say so in the answer. The three output lines (Hard rule 1) and the greps are never skipped on either path.
+- **One ID per defect.** Report each defect once, under its owner in the tells.md "Not here" table (a # tell wins over a T tell for the same element). C rules are how a fix is measured, not separate findings.
 
 ## Operating posture
 
@@ -211,7 +221,7 @@ For each candidate motion, write one sentence: `<element> animates because <purp
 1. Run the grep sequence in [references/preflight.md](references/preflight.md) in bash, with the bindings §0 variables, on the touched files: expo-design-system references/audit.md section 1 -> native-slop greps -> the T-grep block in [references/tells.md](references/tells.md). T13 runs over the whole source tree. Every hit is fixed or justified in one line; a hit reported under a # tell is not reported again as a T tell.
 2. Inspect the matrix: iOS and Android x light and dark x default and largest accessibility text size x loading, empty, error and content x the longest locale (minimum pass in preflight.md section 3). List the cells you could not inspect.
 3. Run expo-design-system's Self-Critique Pass on a rendered screen.
-4. Tick every box in preflight.md. Boxes marked (S) that you could not verify are reported, never ticked.
+4. Full path: tick every box in preflight.md. Boxes marked (S) that you could not verify are reported, never ticked. Light path: the reduced Step 9 in 'Light path and full path'.
 5. Run lint and typecheck (commands in bindings §10).
 
 ## Taste tells T1-T20 (index)
@@ -280,3 +290,4 @@ A review of an existing screen with no changes requested uses the report templat
 | [references/tells.md](references/tells.md) | T1-T20 in full, the grep block, the "Not here" table |
 | [references/redesign.md](references/redesign.md) | Step 0 branch: modes, decision tree, audit, lever order, never-change list, report template |
 | [references/preflight.md](references/preflight.md) | Step 9: grep sequence, dedupe, verification matrix, the checklist |
+| [references/maintenance.md](references/maintenance.md) | Before editing the skill or the bindings: no new rules until the with/without eval, size budget, bindings that do not rot |

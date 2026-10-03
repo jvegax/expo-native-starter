@@ -2,6 +2,8 @@
 
 Blank skeleton of `references/repo-bindings.md`. Use it when a project has no bindings file, or when the one present was copied from another app (the paths in its §0 do not exist here, or its header names another project). Copy this file to `repo-bindings.md`, fill every section from what the project already declares (design-bible.md 'Greenfield procedure', step 1: detect before proposing), then delete the instruction lines. The core cites these section numbers as "bindings §N", so keep the numbering and headings even when a section is short.
 
+Write it so it does not rot (maintenance.md section 3): paths and symbols, never line numbers; contrast ratios and expected grep hits measured, not remembered.
+
 Every value is either read from the project (`declared`), derived from code or the category row (`derived`), or proposed (`assumed`). Assumed values in §1, §2 (type, platform mode) and §4 need the user's yes before the first screen.
 
 ```markdown
