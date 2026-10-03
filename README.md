@@ -77,7 +77,7 @@ What is configured, why, and how to measure it: [docs/performance.md](docs/perfo
 | | production | preview (default) |
 | --- | --- | --- |
 | App name | My App | My App (Preview) |
-| Bundle id | `com.example.myapp` | `com.example.myapp.preview` |
+| Bundle id | `com.jvegax.nativetemplate` | `com.jvegax.nativetemplate.preview` |
 | API | `https://api.example.com` | `https://api-preview.example.com` |
 
 `EXPO_PUBLIC_API_URL` in `.env` overrides the API URL. `src/config/env.ts` is the only place the app reads environment values.

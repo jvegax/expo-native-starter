@@ -32,13 +32,13 @@ const environments: Record<AppEnv, EnvironmentConfig> = {
   production: {
     name: 'My App',
     scheme: 'myapp',
-    appId: 'com.example.myapp',
+    appId: 'com.jvegax.nativetemplate',
     apiUrl: 'https://api.example.com',
   },
   preview: {
     name: 'My App (Preview)',
     scheme: 'myapp-preview',
-    appId: 'com.example.myapp.preview',
+    appId: 'com.jvegax.nativetemplate.preview',
     apiUrl: 'https://api-preview.example.com',
   },
 };

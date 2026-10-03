@@ -78,7 +78,7 @@ Use a release build (`preview`) on a mid-range device; development builds are no
 | Tool | Use |
 | --- | --- |
 | React Native DevTools (`j` in Metro) | Timeline with our marks (`bootstrap:*`, `tti`), React profiler |
-| `adb shell am start -W -n com.example.myapp.preview/.MainActivity` | Android cold start time |
+| `adb shell am start -W -n com.jvegax.nativetemplate.preview/.MainActivity` | Android cold start time |
 | Xcode Instruments, App Launch | iOS launch phases |
 | [Flashlight](https://github.com/bamlab/flashlight) | Android FPS, CPU and RAM |
 | [Expo Atlas](https://docs.expo.dev/guides/analyzing-bundles/) | Bundle contents. Run on demand only and do not commit it (its `stream-json` dependency has an open advisory) |
