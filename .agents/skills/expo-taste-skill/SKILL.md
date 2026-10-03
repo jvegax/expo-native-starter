@@ -218,7 +218,7 @@ For each candidate motion, write one sentence: `<element> animates because <purp
 
 ## Step 9: Pre-flight and verify
 
-1. Run the grep sequence in [references/preflight.md](references/preflight.md) in bash, with the bindings §0 variables, on the touched files: expo-design-system references/audit.md section 1 -> native-slop greps -> the T-grep block in [references/tells.md](references/tells.md). T13 runs over the whole source tree. Every hit is fixed or justified in one line; a hit reported under a # tell is not reported again as a T tell.
+1. Run the grep sequence in [references/preflight.md](references/preflight.md) in bash, with the bindings §0 variables, on the touched files (`scripts/taste-greps.sh` runs the T block and diffs it against the baseline; `scripts/contrast.ts` after any color change): expo-design-system references/audit.md section 1 -> native-slop greps -> the T-grep block in [references/tells.md](references/tells.md). T13 runs over the whole source tree. Every hit is fixed or justified in one line; a hit reported under a # tell is not reported again as a T tell.
 2. Inspect the matrix: iOS and Android x light and dark x default and largest accessibility text size x loading, empty, error and content x the longest locale (minimum pass in preflight.md section 3). List the cells you could not inspect.
 3. Run expo-design-system's Self-Critique Pass on a rendered screen.
 4. Full path: tick every box in preflight.md. Boxes marked (S) that you could not verify are reported, never ticked. Light path: the reduced Step 9 in 'Light path and full path'.

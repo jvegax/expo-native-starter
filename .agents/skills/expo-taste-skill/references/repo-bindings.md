@@ -32,14 +32,111 @@ EMPTY_RE_ES=':[[:space:]]*"(a[uú]n no hay|no hay (nada|resultados|datos)|nada (
 ERROR_RE_ES=':[[:space:]]*"[^"]*(algo (ha ido|sali[oó]) mal|error desconocido|ha ocurrido un error|int[eé]ntalo m[aá]s tarde)'   # T19
 DASH_RE="$(printf '\342\200\224|\342\200\223')"   # T13: U+2014 | U+2013, built so this file stays clean
 MOCK_PREFIX=MOCK_                         # mock constants (§8)
+THEME_MODULE=src/shared/theme/themes.ts   # scripts/contrast.ts imports it and measures every export with `colors`
+CONTRAST_PAIRS='text/surface:4.5 text/background:4.5 text/surfaceMuted:4.5 text/primaryContainer:4.5 textMuted/surface:4.5 textMuted/background:4.5 textMuted/surfaceMuted:4.5 primary/surface:4.5 primary/background:4.5 onPrimary/primary:4.5 onPrimary/primaryPressed:4.5 danger/surface:4.5 danger/background:4.5 success/surface:4.5 border/surface:3'   # fg/bg:min (C15)
 ```
 
 Usage:
 - The tells.md block reads these through its `src_grep`, `i18n_grep` and `drop` helpers; paste this block first and nothing else is needed. Ad hoc copy greps: `grep -En -i "$RE" $I18N_FILES`, value patterns anchored to `:[[:space:]]*"` so JSON keys never match.
+- Scripts (run from the repo root): `bash .agents/skills/expo-taste-skill/scripts/taste-greps.sh` runs the tells.md block with these variables and diffs it against the baseline below (exit 1 on a new hit; pass touched files to scope it, `--update` to rewrite the baseline). `bun .agents/skills/expo-taste-skill/scripts/contrast.ts` measures `CONTRAST_PAIRS` in both themes (`--check` exits 1 on a failing pair). Every contrast ratio in this file comes from it; re-run it in the same commit as any palette change.
 - T13 (binary, all files, comments included): `grep -rEn "$DASH_RE" $SRC` must print nothing.
 - `rg` is not available in bash here (only a zsh shell function), so never call it from these blocks. native-slop's #3 emoji grep becomes: `find $SRC -name '*.tsx' -exec perl -CSD -ne 'print "$ARGV:$.:$_" if /[\p{Emoji_Presentation}\x{FE0F}]/; close ARGV if eof' {} +`. audit.md and native-slop.md run with `SRC=src THEME=src/shared/theme` and the whitelist above.
 
-Expected hits on the clean baseline (justify, do not fix): native-slop `headerShown: false` x4 (root gate, drawer group, drawer, sheet: chrome config, not #11); T10 on the stock hex values in `src/shared/theme/tokens/colors.ts` (the placeholder palette, §1: fixed by declaring a brand, never per screen); audit hex grep on `#1077` in `src/providers/keyboard-provider.android.tsx` (an issue number in a comment); T16 `@example.com` in `src/features/auth/utils/session/mock-auth.ts` (mock seam triggers, never shown); T3 in not-found, AsyncState and auth error lines; T17 count 2 in sign-in/sign-up (primary + ghost link, sanctioned); T8 `boxShadow` in a comment at `club-card.styles.ts:16`; T16 advisory `account_circle` in `app-tabs-layout.tsx:55` (Profile tab icon) and `settings-screen.tsx:17` (Account row icon), not person placeholders; T17 count 2 in `item-detail-screen.tsx` (primary next item + secondary open sheet, distinct intents, demo screen); T3 at `item-detail-screen.tsx:29` (the §9 centered placeholder). Everything else is in §9.
+Expected hits on the clean baseline: the T greps print exactly the `taste-greps-expected` block below (regenerate it with `taste-greps.sh --update` on a clean tree, in the same commit that adds, fixes or justifies a hit). Why the non-debt hits stand (justify, do not fix): native-slop `headerShown: false` x4 (root gate, drawer group, drawer, sheet: chrome config, not #11); T10 on the stock hex values in `src/shared/theme/tokens/colors.ts` (the placeholder palette, §1: fixed by declaring a brand, never per screen); audit hex grep on `#1077` in `src/providers/keyboard-provider.android.tsx` (an issue number in a comment); T16 `@example.com` in `src/features/auth/utils/session/mock-auth.ts` (mock seam triggers, never shown); T3 in not-found, AsyncState and auth error lines; T17 count 2 in sign-in/sign-up (primary + ghost link, sanctioned); T8 `boxShadow` in a comment in `club-card.styles.ts`; T16 advisory `account_circle` in `app-tabs-layout.tsx` (Profile tab icon) and `settings-screen.tsx` (Account row icon), not person placeholders; T17 count 2 in `item-detail-screen.tsx` (primary next item + secondary open sheet, distinct intents, demo screen); T3 in `item-detail-screen.tsx` (the §9 centered placeholder). Everything else is in §9.
+
+```taste-greps-expected
+## T1
+src/features/auth/i18n/en.json:    "subtitle": "Welcome back. Use any email and a password of 6+ characters.",
+src/features/auth/i18n/es.json:    "subtitle": "Hola de nuevo. Usa cualquier email y una contraseña de 6 o más caracteres.",
+src/features/home/i18n/en.json:    "title": "Welcome to {{appName}}",
+src/features/home/i18n/es.json:    "title": "Bienvenido a {{appName}}",
+## T2
+## T3
+src/screens/auth/session/sign-in-screen.tsx:        <Text color="danger" align="center">
+src/screens/auth/session/sign-up-screen.tsx:        <Text color="danger" align="center">
+src/screens/home/item/item-detail-screen.tsx:        <Text color="textMuted" align="center">
+src/screens/home/not-found/not-found-screen.tsx:        <Text color="textMuted" align="center">
+src/shared/ui/async-state/async-state.tsx:        <Text color="danger" align="center">
+src/shared/ui/async-state/async-state.tsx:        <Text color="textMuted" align="center">
+## T4
+## T5
+src/components/club/club/club-card/club-card.styles.ts
+src/components/home/home/welcome-card/welcome-card.styles.ts
+## T6
+## T7
+   1 borderRadius: theme.radii.full
+   2 borderRadius: theme.radii.md
+   4 borderRadius: theme.radii.lg
+## T8
+src/components/club/club/club-card/club-card.styles.ts:      // boxShadow costs an extra native view.
+## T9
+## T10
+src/shared/theme/tokens/colors.ts:  blue600: '#2563EB',
+src/shared/theme/tokens/colors.ts:  gray100: '#F3F4F6',
+src/shared/theme/tokens/colors.ts:  gray200: '#E5E7EB',
+src/shared/theme/tokens/colors.ts:  gray300: '#D1D5DB',
+src/shared/theme/tokens/colors.ts:  gray500: '#6B7280',
+src/shared/theme/tokens/colors.ts:  gray700: '#374151',
+src/shared/theme/tokens/colors.ts:  gray900: '#111827',
+## T11
+## T12
+## T13
+## T14
+src/features/auth/i18n/en.json:    "noAccount": "Don't have an account?",
+## T15
+src/features/account/i18n/en.json:    "openDetail": "Open a detail screen",
+src/features/account/i18n/en.json:    "openDetailHint": "Pushed over the tabs",
+src/features/account/i18n/en.json:    "openSheet": "Open a sheet",
+src/features/account/i18n/en.json:    "openSheetHint": "Native form sheet with detents"
+src/features/account/i18n/es.json:    "openDetail": "Abrir una pantalla de detalle",
+src/features/account/i18n/es.json:    "openDetailHint": "Se apila por encima de las tabs",
+src/features/account/i18n/es.json:    "openSheet": "Abrir un sheet",
+src/features/account/i18n/es.json:    "openSheetHint": "Form sheet nativo con detents"
+src/features/auth/i18n/en.json:    "subtitle": "This is a mock: no data leaves the device.",
+src/features/auth/i18n/es.json:    "subtitle": "Es un mock: ningún dato sale del dispositivo.",
+src/features/home/i18n/en.json:    "body": "A mocked detail screen with no data. It was pushed onto the app stack, above the drawer and the tabs, so it covers the tab bar and swipes back natively.",
+src/features/home/i18n/en.json:    "body": "A mocked detail screen with no data. It was pushed onto the app stack, above the drawer and the tabs, so it covers the tab bar and swipes back natively.",
+src/features/home/i18n/en.json:    "openNext": "Open item {{id}}",
+src/features/home/i18n/en.json:    "openSheet": "Open sheet",
+src/features/home/i18n/en.json:    "rowSubtitle": "Opens a detail screen with no data"
+src/features/home/i18n/en.json:    "rowSubtitle": "Opens a detail screen with no data"
+src/features/home/i18n/en.json:    "rowTitle": "Item {{id}}",
+src/features/home/i18n/en.json:    "sheetBody": "A form sheet with detents and a grabber. Drag it up or down, or close it.",
+src/features/home/i18n/en.json:    "sheetTitle": "Native sheet",
+src/features/home/i18n/en.json:    "subtitle": "This starter ships with Expo Router, TanStack Query, Zustand, i18n and a themed design system.",
+src/features/home/i18n/en.json:    "title": "Item {{id}}",
+src/features/home/i18n/es.json:    "body": "Una pantalla de detalle mock sin datos. Se apila en el stack de la app, por encima del drawer y las tabs, así que tapa la tab bar y vuelve atrás con el gesto nativo.",
+src/features/home/i18n/es.json:    "body": "Una pantalla de detalle mock sin datos. Se apila en el stack de la app, por encima del drawer y las tabs, así que tapa la tab bar y vuelve atrás con el gesto nativo.",
+src/features/home/i18n/es.json:    "openSheet": "Abrir sheet",
+src/features/home/i18n/es.json:    "rowSubtitle": "Abre un detalle sin datos"
+src/features/home/i18n/es.json:    "sheetBody": "Un form sheet con detents y grabber. Arrástralo arriba o abajo, o ciérralo.",
+src/features/home/i18n/es.json:    "sheetTitle": "Sheet nativo",
+src/shared/ui/async-state/async-state.tsx:  if (error instanceof HttpError) return error.kind === 'network' ? network : error.message;
+## T16
+src/features/auth/utils/session/mock-auth.ts: * - error@example.com -> invalidCredentials (sign in and sign up)
+src/features/auth/utils/session/mock-auth.ts: * - taken@example.com -> emailTaken (sign up)
+src/features/auth/utils/session/mock-auth.ts:const FAILING_EMAIL = 'error@example.com';
+src/features/auth/utils/session/mock-auth.ts:const TAKEN_EMAIL = 'taken@example.com';
+src/screens/account/settings/settings-screen.tsx:  { id: 'account', icon: { ios: 'person.crop.circle', android: 'account_circle' } },
+src/screens/navigation/tabs/app-tabs-layout.tsx:          md="account_circle"
+## T17
+src/screens/auth/session/sign-in-screen.tsx:2
+src/screens/auth/session/sign-up-screen.tsx:2
+src/screens/home/item/item-detail-screen.tsx:2
+## T18
+src/features/club/i18n/en.json:    "empty": "No clubs yet",
+src/features/club/i18n/en.json:    "empty": "No members yet",
+src/features/club/i18n/es.json:    "empty": "Aún no hay clubes",
+src/features/club/i18n/es.json:    "empty": "Aún no hay miembros",
+src/shared/i18n/en.json:    "empty": "Nothing here yet"
+src/shared/i18n/es.json:    "empty": "Aún no hay nada aquí"
+## T19
+src/shared/i18n/en.json:    "generic": "Something went wrong",
+src/shared/i18n/es.json:    "generic": "Algo ha ido mal",
+## T20
+## C17
+3
+```
 
 ## 1. Brand status: NONE (starter placeholder)
 
@@ -201,7 +298,7 @@ Report by ID; fix only when asked or when real screens replace them (architectur
 - **UserSummary** (`user-summary.styles.ts`): avatar filled with `primary` (**C6** decorative accent) at `avatarMd`. Also the drawer header, where it stays compact at `avatarMd`; its fix is the §6 Avatar fill only. Profile gets its own identity block (§3).
 - **AsyncState** (`src/shared/ui/async-state/async-state.tsx`): **T19** renders raw `HttpError.message` for non-network errors (line 24) and `common.errors.generic` "Something went wrong" / "Algo ha ido mal"; **T18** empty is muted text only with no action slot (`common.states.empty`, `club.empty`, `member.empty` in both locales); Retry is `size="sm"` secondary, about 30pt (line 56); **T19** stale content: `if (isError)` (line 50) replaces children whenever `isError` is true, so a failed refresh wipes the stale content on screen, which breaks "stale content stays" (SKILL.md Step 6); fix target: the full-screen error only when there is no data, otherwise an inline line (§6); **#19** risk: a centered `ActivityIndicator` for every pending state, though club and member layouts are known (skeleton target).
 - **ListSection** (`list-section.tsx` line 21): the title has no `accessibilityRole="header"`.
-- **Palette** (`src/shared/theme/themes.ts`): **T10** the stock placeholder palette (§1); `danger` red500 as text is 3.8:1 light and 3.9:1 dark on `surface`, `success` green500 is 2.3:1 light (error lines, field errors and confirmations below 4.5:1); dark `onPrimary` on `primaryPressed` is 3.4:1 (the iOS pressed primary label). Fixed by the brand declaration, which picks AA steps.
+- **Palette** (`src/shared/theme/themes.ts`): **T10** the stock placeholder palette (§1); `danger` red500 as text is 3.8:1 light and 3.9:1 dark on `surface`, `success` green500 is 2.3:1 light (error lines, field errors and confirmations below 4.5:1); dark `onPrimary` on `primaryPressed` is 3.4:1 (the iOS pressed primary label); light `textMuted` on `surfaceMuted` is 4.4:1 (a subtitle on a pressed row, transient). Numbers from `scripts/contrast.ts`. Fixed by the brand declaration, which picks AA steps.
 - **TextField** (`text-field.styles.ts` line 18): **C15** outline `border` is 1.24:1 (light) / 1.42:1 (dark) against `surface`: token debt until `inputBorder` exists (§6). Preflight reports it, it does not fail every form.
 - **Radius**: no style uses `borderCurve: 'continuous'` (expo-design-system 'Radius').
 - **Settings** (`settings-screen.tsx` line 16): mock constant `ENTRIES` lacks the `MOCK_` prefix; every row opens the same data-less detail.
