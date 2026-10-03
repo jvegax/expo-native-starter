@@ -48,11 +48,11 @@ First-run (nothing yet, the user or someone else will add it), no-results (a que
 | Symbol | Muted, literal platform symbol from the declared family at the empty-state size (bindings §2); at V>=3 it may sit on the accent-container circle; illustration only at V>=5 on non-frequent screens | None, or the search symbol | Optional checkmark-type symbol, muted |
 | Title | At most 6 words, says what lives here: “Events you join appear here” | No events match “{{query}}” | The current fact: “You’re all caught up”, “No events scheduled” |
 | Sentence | One sentence on how it gets populated: “Browse upcoming events and join one to save your spot.” | One recovery step: “Check the spelling or try fewer words.” (or “Remove a filter.” when non-search filters are active) | None, or one fact on when content returns: “New requests show up here.”, “Next season’s events appear once the calendar is out.” |
-| Action | Verb + object when the user can create or find it: “Find events”. None when someone else populates it (say who) | None with native header search: its own clear/cancel control clears the query, so a Clear search button is a duplicate (T17). Clear filters only for non-search filters (chips, a filter sheet) | None (a create action belongs to first-run; a past-items view, if the screen has one, stays reachable through its normal control) |
+| Action | Verb + object when the user can create or find it: “Find events”. When someone else populates it, say who and offer “Refresh” / “Actualizar”: never a dead end (eval run 1) | None with native header search: its own clear/cancel control clears the query, so a Clear search button is a duplicate (T17). Clear filters only for non-search filters (chips, a filter sheet) | None (a create action belongs to first-run; a past-items view, if the screen has one, stays reachable through its normal control) |
 
 - The first-run sentence is where the app explains itself, never a welcome block on the Hub (T1).
 - No emoji (#3), no giant illustration on a screen opened tens of times a day, no exclamation mark, no “Let’s get started”.
-- When only another person can populate it, the sentence names them: “Your host adds sessions here.”
+- When only another person can populate it, the sentence names them (“Your host adds sessions here.”) and the action is Refresh, a secondary button, because pull to refresh cannot be seen.
 - No-results never shows the first-run create action, and the query is echoed exactly as typed inside curly quotes.
 - Nothing now is not first-run: it never explains the app and never offers the create action unless the user is the one who schedules the content (then it is first-run copy for that user).
 

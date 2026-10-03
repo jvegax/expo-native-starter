@@ -108,7 +108,7 @@ A failure in a cell widens the pass around it. List every cell of the minimum pa
 - [ ] [C1] One focal point, named, visible without scrolling. The first viewport of a Hub shows user content or the next action, not a welcome block, a promo carousel or a quick-action tile grid that duplicates tabs (T1, T17). (S)
 - [ ] [C2] Exactly one filled primary per screen or sheet, counted per state branch. One control per intent: the header create hides while the empty-state create shows. Screen-level actions are header or menu items (T17).
 - [ ] [C4] Four distinct spacing steps (inline < row-internal < group < section) from the D band in bindings §2. No spacing literal outside the whitelist. (S)
-- [ ] [C5] Reading content is leading-aligned; numeric columns trail-align. Centering only in exempt archetypes (T3).
+- [ ] [C5] Reading content is leading-aligned; numeric columns trail-align. Centering only in exempt archetypes and the identity block (T3).
 - [ ] [C7] At most 2 surface levels and framing depth 2. Each container uses one separation device; a grouped list (fill + inner hairlines + outline hairline) counts as one. Absolute position and z-index only for real layers (T5).
 - [ ] [C8] Radii come from the scale by role, nested = outer - inset, corner smoothing per expo-design-system 'Radius' or the bindings §5 override. Chrome config is exempt (T7). (S)
 - [ ] [C10] Every image has a fixed aspect ratio per context (one per list), a placeholder and a recycling key in lists. Text over media sits on the solid scrim token at 4.5:1 (a gradient scrim only after checking it on both platforms) or below the media. Nothing shifts on load. (S)

@@ -31,9 +31,9 @@ Scope: the content region between the chrome. The navigation bar, tab bar, sheet
 - **Fix.** Re-map to the band's table. Never add an in-between value; a recurring one becomes a scale step through expo-design-system 'The Theme' / 'Spacing'.
 
 ### C5 Leading alignment
-- **Rule.** Leading alignment. Centering only in Empty, Result, Onboarding, the auth brand mark and single-action confirmations.
+- **Rule.** Leading alignment. Centering only in Empty, Result, Onboarding, the auth brand mark, single-action confirmations and the stacked identity block of a Detail or Profile (avatar, name, one meta line; everything below it stays leading-aligned).
 - **Why.** Reading content scans down one leading edge. A centered column is the web hero reflex (T3): ragged on both sides, slower to read, and it fights the leading-aligned native header.
-- **Measure.** T3 grep (tells.md), ignoring files of the exempt archetypes. Screenshot: every text block, row and button in a non-exempt screen shares the screen-edge axis. Numbers in rows and columns align to the trailing edge.
+- **Measure.** T3 grep (tells.md), ignoring files of the exempt archetypes and identity-block components. The identity exemption follows the iOS Contacts pattern, which the blind reviewer of eval run 1 preferred (maintenance.md). Screenshot: every text block, row and button in a non-exempt screen shares the screen-edge axis. Numbers in rows and columns align to the trailing edge.
 - **Fix.** Remove center alignment, put the content on the screen edge padding, right-align numeric columns. Centering is decided by archetype, never by V.
 
 ### C6 Accent budget

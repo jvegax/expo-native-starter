@@ -30,8 +30,8 @@ Named taste failures in the content region of a native screen, each with the nat
 ### T3 Centered Everything
 - **Tell:** titles, body text and buttons center-aligned on Hub, Detail, Collection, Profile, Settings or Form screens, or centered content inside rows. The web hero reflex.
 - **Why it hurts:** centered lines have no shared leading edge, so the eye re-finds the start of every line. Rows and headers are leading-aligned, so centered content looks pasted in.
-- **Native fix:** leading alignment for all reading content. Centering only in Empty, Result, Onboarding, the auth brand mark and single-action confirmations (C5).
-- **Detect:** review-each (grep T3), ignoring hits in empty, result, onboarding and auth brand-mark files.
+- **Native fix:** leading alignment for all reading content. Centering only in Empty, Result, Onboarding, the auth brand mark, single-action confirmations and the stacked identity block of a Detail or Profile (avatar, name, one meta line; everything below it stays leading-aligned) (C5).
+- **Detect:** review-each (grep T3), ignoring hits in empty, result, onboarding, auth brand-mark and identity-block files.
 - **Related:** C5. **Source:** taste-skill anti-center bias.
 
 ### T4 The Double Title
@@ -105,7 +105,7 @@ Named taste failures in the content region of a native screen, each with the nat
 
 ### T13 The Em Dash
 - **Tell:** any em dash (U+2014) or en dash (U+2013) in a visible string, mock data, JSX literal or comment, in any locale. Also " -- " used as a dash, and ranges built with Intl `formatRange`, which prints U+2013 at runtime where no file grep can see it. BINARY: one hit fails the pre-flight.
-- **Why it hurts:** it is the most recognizable generated-text tic, and it does not belong to the app's own voice in any locale.
+- **Why it hurts:** house style, not a typography claim: an en dash in a range is correct typography (the blind reviewer of eval run 1 said so). The repo bans both because the em dash is the most recognizable generated-text tic, and one binary rule is cheaper to enforce than judging each dash.
 - **Native fix:** period, comma, colon, parentheses or two strings. Ranges are i18n strings ("{{from}} to {{to}}" / "de {{from}} a {{to}}"), never `formatRange` (it prints U+2013 and may be missing in Hermes). A hyphen only inside compound words and single-value formatter output (dates, times).
 - **Detect:** review-each, zero hits required (grep T13 across every file under the source root, comments included).
 - **Related:** none. **Source:** taste-skill em-dash ban.
@@ -143,7 +143,7 @@ Named taste failures in the content region of a native screen, each with the nat
 ### T18 The Dead-End Empty
 - **Tell:** an empty state that is only a muted centered line ("No items yet", "Nothing here yet", "No data"), with no reason, no action, and the same copy for first-run, no-results and nothing now. (#19 covers the empty state flashing during load; this tell covers the content of a real empty state.)
 - **Why it hurts:** the first thing a new user sees is a dead end with no way forward.
-- **Native fix:** three kinds. First-run: muted symbol + title of at most 6 words saying what goes here + 1 sentence on how it gets populated + the create action when the user can create. No-results: echo the query + a recovery sentence (the header search bar's own clear is the clear action; Clear filters only for non-search filters, T17). Nothing now (cleared, caught up, or nothing current or scheduled): one plain line stating the fact, optionally when content returns, no create action. No emoji (#3), no giant illustration on frequent screens. Anatomy: states-and-copy.md.
+- **Native fix:** three kinds. First-run: muted symbol + title of at most 6 words saying what goes here + 1 sentence on how it gets populated + one action: create when the user can, otherwise Refresh (pull to refresh is invisible). No-results: echo the query + a recovery sentence (the header search bar's own clear is the clear action; Clear filters only for non-search filters, T17). Nothing now (cleared, caught up, or nothing current or scheduled): one plain line stating the fact, optionally when content returns, no create action. No emoji (#3), no giant illustration on frequent screens. Anatomy: states-and-copy.md.
 - **Detect:** review-each (grep T18, English and the Spanish pattern from bindings §0) + check that the empty-state component has an action slot.
 - **Related:** #19, #3. **Source:** taste-skill composed empty states.
 
@@ -177,7 +177,7 @@ i18n_grep -i "$V(welcome( to|,| back)|get started|discover)"
 [ -n "$HERO_RE_ES" ] && i18n_grep -i "$HERO_RE_ES"
 # T2 (advisory: file names)
 find $SRC -type f -name '*.tsx' | grep -Ei '(^|[/-])(stats?|kpi|metric|chart|sparkline|widget|gauge|ring)[-./]'
-# T3 (skip Empty, Result, Onboarding and auth brand-mark files)
+# T3 (skip Empty, Result, Onboarding, auth brand-mark and identity-block files)
 src_grep "align=\"center\"|textAlign: *'center'" $SCREENS $COMPONENTS
 # T4 (advisory; misses a header title repeated by a child component)
 grep -rlE --include='*.tsx' 'title:' $SCREENS | while read -r f; do grep -nHE "$TITLE_TEXT_RE" "$f"; done

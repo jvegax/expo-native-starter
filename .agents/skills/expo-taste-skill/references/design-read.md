@@ -48,7 +48,7 @@ The first layout that comes to mind is usually the average of every app and webs
 | Welcome card with app explanation and a big CTA on a tab root | T1 | The Hub answers "what needs me now". The explanation moves to the first-run empty state. |
 | Three stat tiles under the title | T2 | Each number goes where it is acted on: trailing row value, section-header count, or one metric with a delta sentence on an Overview. |
 | A card per row | #7 | Rows in the grouped-list or virtualized-list primitive. Cards only for entities acted on as a unit, one card style per app. |
-| A centered column (title, text, button) | T3 | Leading alignment. Centering only in Empty, Result, Onboarding, the auth brand mark and single-action confirmations (C5). |
+| A centered column (title, text, button) | T3 | Leading alignment. Centering only in Empty, Result, Onboarding, the auth brand mark, single-action confirmations and a Detail or Profile identity block (C5). |
 | Header "+" and an in-content "Create" button | T17 | One control per intent. Header item for the screen-level create, hidden while the empty-state action shows. |
 | Uppercase eyebrow above every block | T12 | The grouped-list section header is the sanctioned one. At most one other eyebrow per screen. |
 | Equal grid of icon quick-action tiles that duplicate tabs or drawer items | T17 | Delete the grid. Navigation already lives in the tabs and the drawer. Keep only an action the user takes now, as the focal block's one button. |

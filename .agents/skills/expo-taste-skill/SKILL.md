@@ -146,7 +146,7 @@ Exactly one per screen (anatomy, states and likeliest tells in [references/arche
 | Settings | grouped list | large title (iOS) | none (scan) | none; rows navigate or toggle; destructive row in the last section |
 | Profile | scroll | large title (iOS) | identity block | Edit as a header item when an edit flow exists, else none |
 | Overview/stats | scroll | large title (iOS) | one metric with context | none, or one header item |
-| Empty / first-run (state) | the parent's | the parent's | the action | the create action once; hide the header create meanwhile |
+| Empty / first-run (state) | the parent's | the parent's | the action | create once when the user can, else Refresh; hide the header create meanwhile |
 | Result/success | scroll or plain | none, or Done | the outcome | single Done or Continue |
 | Onboarding / permission primer | plain or keyboard-aware | none | one question | one per step, at most 3 steps, Skip allowed; only when it collects setup (#15) |
 
@@ -163,7 +163,7 @@ Check the shared UI inventory (bindings §3) before composing. Rationale, measur
 - **C2 One filled primary** per screen (a sheet counts as a screen), counted per state branch. Everything else is a secondary or ghost button, a row, a header item or a menu item.
 - **C3 Type steps and emphasis:** at most 3 text steps in the content region (nav title excluded), at most 2 per row, at most 1 display element (V>=5, or a real hero number on Overview). Emphasis uses the ramp's weight steps or another weight of the same family, one axis at a time (size OR weight OR color); how this app expresses weight is in bindings §2.
 - **C4 Spacing tempo:** 4 distinct scale steps, inline < row-internal < group < section, values from the D band (#12 owns the defect).
-- **C5 Leading alignment.** Centering only in Empty, Result, Onboarding, the auth brand mark and single-action confirmations.
+- **C5 Leading alignment.** Centering only in Empty, Result, Onboarding, the auth brand mark, single-action confirmations and the stacked identity block of a Detail or Profile (avatar, name, one meta line; everything below it stays leading-aligned).
 - **C6 Accent budget:** one accent, in at most 3 roles in the content region: the primary action, selection/active state, one highlight (a key value or one inline link). Chrome tint (back button, header items, tab selection) is exempt; a ghost button label counts as the highlight. Never body text, every icon, borders or headings. Status colors only for status, never as the only signal.
 - **C7 Surface levels and one separation device:** at most 2 surface levels (canvas -> group/card). One separation device per container: fill contrast OR hairline OR the lightest tokened shadow. A grouped list (fill + inner hairlines + outline hairline) is one device. Absolute position and z-index only for real layers.
 - **C8 Radius by role** from the scale; nested radius = outer - inset; corner smoothing per expo-design-system 'Radius' or the bindings §5 override. Chrome config (sheet corner radius) is exempt.
@@ -185,7 +185,7 @@ Name exactly one structural move per screen (composition.md 'Structural moves').
 Every data-backed screen designs loading, empty, error and content (plus pending for writes) before content polish. Mechanics belong to #19 and the data layer (bindings §10); confirmation and alert policy belong to #10. This skill owns only how each state looks and reads ([references/states-and-copy.md](references/states-and-copy.md)).
 
 - **Loading:** mechanics per #19. Taste adds: skeleton blocks on the muted surface with the radius role of what they stand in for, geometry matching the first viewport, no shimmer at M<=2, no "Loading…" next to a skeleton.
-- **Empty, three kinds.** First-run: muted literal symbol + title of at most 6 words saying what goes here + 1 sentence on how it gets populated + the create action when the user can create. No-results: echo the query + one recovery sentence (broaden the terms, check the spelling); the native header search bar's own clear/cancel is the clear action, so no duplicate Clear button, and a Clear filters button only for non-search filters. Nothing now (cleared, caught up, or nothing current or scheduled): one plain line stating the fact, optionally when content returns, no create action. Never "No data" and never one string for all three.
+- **Empty, three kinds.** First-run: muted literal symbol + title of at most 6 words saying what goes here + 1 sentence on how it gets populated + exactly one action: create (or find) when the user can, otherwise Refresh, with the sentence naming who adds the content. Pull to refresh is invisible, so it never counts as the action. No-results: echo the query + one recovery sentence (broaden the terms, check the spelling); the native header search bar's own clear/cancel is the clear action, so no duplicate Clear button, and a Clear filters button only for non-search filters. Nothing now (cleared, caught up, or nothing current or scheduled): one plain line stating the fact, optionally when content returns, no create action. Never "No data" and never one string for all three.
 - **Error:** inline at its scope (field, section, screen), naming what failed and one next step: "Could not <verb> <object>. <Next step>." Stale content stays: a failed refresh with data on screen is an inline line, never a full-screen error. Full-screen only when nothing can render. Never raw server or exception text.
 - **Success:** policy per #10. The UI change is the confirmation; a transient message only for Undo or an off-screen result (T20).
 - **Destructive:** whether to confirm is #10. When confirming natively, title it "<Verb> <object>?" and repeat the verb on the destructive button.
@@ -194,7 +194,7 @@ Every data-backed screen designs loading, empty, error and content (plus pending
 
 Re-read every visible string in every locale before Step 9 (formulas, banned words and the Copy Self-Audit in [references/states-and-copy.md](references/states-and-copy.md)):
 
-1. Zero em dashes (U+2014) and en dashes (U+2013) in any visible string, mock data, JSX literal or comment, in every locale. Binary. Use a period, comma, colon, parentheses or two strings. Ranges are i18n strings ("{{from}} to {{to}}").
+1. Zero em dashes (U+2014) and en dashes (U+2013) in any visible string, mock data, JSX literal or comment, in every locale. Binary house style (T13). Use a period, comma, colon, parentheses or two strings. Ranges are i18n strings ("{{from}} to {{to}}").
 2. Sentence case for titles, buttons, tabs, rows and section headers. Capitals only for proper nouns.
 3. CTA = verb + object, at most 3 words, one line at default size in the longest locale, naming the outcome ("Join event", never "Submit").
 4. One register per app and language, locked in the bible: person, formality, pronoun. The app does not call itself "we" unless the bible says so. Active voice with the real actor.
@@ -226,13 +226,13 @@ For each candidate motion, write one sentence: `<element> animates because <purp
 
 ## Taste tells T1-T20 (index)
 
-Review prompts with a named native fix, like native-slop. Numbered T so they never collide with native-slop #1-#20. T13 The Em Dash is binary; every other tell is judged hit by hit. Full entries, Detect classes, the grep block and the "Not here" ownership table are in [references/tells.md](references/tells.md). Known hits in this app are in bindings §9.
+Review prompts with a named native fix, like native-slop. Numbered T so they never collide with native-slop #1-#20. T13 The Em Dash is a binary house style (not a quality claim); every other tell is judged hit by hit. Full entries, Detect classes, the grep block and the "Not here" ownership table are in [references/tells.md](references/tells.md). Known hits in this app are in bindings §9.
 
 | ID | Name | Observable tell | Native fix | Related |
 | --- | --- | --- | --- | --- |
 | T1 | The Website Hero | Tab root opens with "Welcome to <App>", an explainer and a big CTA, or an auto-advancing promo carousel | Hub: the user's most time-relevant content first; explanation moves to the first-run empty | #4, #15 |
 | T2 | The Stat Wall | Equal tiles of big numbers with tiny labels, decorative rings or filled tracks, no unit or period | Each number where it is acted on: row value, section count, one metric with a delta sentence | C13 |
-| T3 | Centered Everything | Centered titles, body and buttons on Hub, Detail, Collection, Profile, Settings or Form | Leading alignment; centering only in the C5 exemptions | C5 |
+| T3 | Centered Everything | Centered titles, body and buttons on Hub, Detail, Collection, Profile, Settings or Form (a stacked identity block is exempt) | Leading alignment; centering only in the C5 exemptions | C5 |
 | T4 | The Double Title | Content repeats the header title at the title step | Native header title only; Detail identity block adds information instead | #11, #16 |
 | T5 | Belt and Braces | Fill + border + shadow on one container, or framing depth 3+ | One separation device per container, depth at most 2 | #7, #8, #9 |
 | T6 | The Spec Sheet | Detail as label/value rows for every field, empty ones included | Identity block, present fields only, the key missing field as an action row | #9 |

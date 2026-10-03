@@ -60,7 +60,7 @@ Every screen is exactly one archetype. Name it in the Design Read, then build th
 - **Primary:** iOS: one button under the identity block, or a header item. Material: one button under the identity block, or a top app bar action. Neutral: bindings §2. Secondary actions go in a header menu (see the menu rule above), never as full-width buttons in the content (T17).
 - **Caps:** V up to the screen default + 1 (max 6). Media header needs V>=5 + real imagery.
 - **Anatomy:**
-  1. Identity block: media 16:9 or 3:2 at V>=5 with real imagery, else avatar or crest + name at the identity-name step (bindings §2) + one meta line. Meaningful images carry an accessibility label; decorative ones are hidden.
+  1. Identity block: media 16:9 or 3:2 at V>=5 with real imagery, else avatar or crest + name at the identity-name step (bindings §2) + one meta line, either stacked and centered or with the avatar leading the name (C5). Meaningful images carry an accessibility label; decorative ones are hidden.
   2. The one primary action.
   3. Key facts: label-left / value-right rows in one group, present fields only (T6). The one important missing field becomes an action row.
   4. Related lists: 3-5 rows + "See all N" (plural-aware), as a mapped static group.
@@ -151,7 +151,7 @@ Every screen is exactly one archetype. Name it in the Design Read, then build th
 - **Primary:** own profile: Edit as a header item when an edit flow exists (text on iOS, icon action on Material, neutral per bindings §2), never a big content button; with no edit flow, "Primary: none". Never add an Edit with nothing behind it (T8). Another person's profile: one relationship action (follow, message, invite) under the identity block.
 - **Caps:** V<=4.
 - **Anatomy:**
-  1. Identity block: avatar at the large avatar size + name at the identity-name step (bindings §2) + one meta line. The avatar carries an accessibility label or is hidden when the name is beside it.
+  1. Identity block: avatar at the large avatar size + name at the identity-name step (bindings §2) + one meta line, stacked and centered or leading (C5). The avatar carries an accessibility label or is hidden when the name is beside it.
   2. Personal rows (the user's content) before account rows.
   3. Account rows.
   4. Sign out in its own final group, with native destructive confirmation (#10).
@@ -181,13 +181,13 @@ Every screen is exactly one archetype. Name it in the Design Read, then build th
 - **Container:** the parent's container.
 - **Header:** the parent's. While the empty action shows, hide the header create (T17).
 - **Focal:** the action.
-- **Primary:** the create action, once, inside the empty composition (when the user can create).
+- **Primary:** one action inside the empty composition: create when the user can, otherwise Refresh (secondary style). Never none: pull to refresh is invisible.
 - **Caps:** V and M +2 over the parent (max V7 M6), D<=3. Illustration instead of a symbol only at V>=5, never on frequent screens.
 - **Anatomy (centered):**
   1. Platform symbol at the empty-state icon size, muted (optionally in an accent-container circle at V>=3).
   2. Title of at most 6 words saying what goes here.
   3. One sentence on how it gets populated.
-  4. The action (verb + object).
+  4. The action (verb + object, or Refresh when someone else adds the content).
   The three kinds (first-run, no-results, nothing now) differ as in Step 6 and states-and-copy.md: only first-run carries a create action.
 - **States:** never shown while loading or before the first fetch resolves (#19).
 - **Likeliest tells:** T18 The Dead-End Empty, T17 Duplicate Intent, T14 The Marketing Voice; #3, #19.
