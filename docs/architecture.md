@@ -54,7 +54,7 @@ Every layer is split by entity, so an entity can be found, grown or deleted as a
 
 `app/_layout.tsx` calls `bootstrap()` (`config/bootstrap.ts`) at module scope, before any screen mounts. It initialises i18n (language read synchronously from MMKV), critical SDKs, the HTTP client (token from the session store, 401 → sign out), the auth cleanup subscription (`setupAuth`), the TanStack focus and online managers, and schedules deferred SDKs. It then renders `<RootNavigator />` inside the providers.
 
-Providers are composed once in `providers/app-providers.tsx`, outermost first: `GestureHandlerRootView` → `PersistQueryClientProvider` → `ThemeProvider` (tokens, navigation theme, system UI) → `I18nextProvider`. Expo Router already renders the `SafeAreaProvider`.
+Providers are composed once in `providers/app-providers.tsx`, outermost first: `GestureHandlerRootView` → `KeyboardProvider` (react-native-keyboard-controller on Android; a passthrough on iOS) → `PersistQueryClientProvider` → `ThemeProvider` (tokens, navigation theme, system UI) → `I18nextProvider`. Expo Router already renders the `SafeAreaProvider`.
 
 ## Navigation and auth
 
@@ -73,7 +73,7 @@ Root Stack (screens/navigation/root/root-navigator.tsx)   ← the only auth gate
 - Auth is mocked behind `features/auth/api/session/*.api.ts`; swapping in a real backend changes only those bodies.
 - Navigator layouts live in `screens/navigation/` and `_layout.tsx` files re-export them, because routes may not import features.
 
-Full rules (where a new screen goes, tabs and drawer limits, swapping in real auth): `.agents/skills/navigation-auth/`.
+Full rules (where a new screen goes, tabs and drawer limits, swapping in real auth): `.agents/skills/navigation-auth/`. Forms, inputs and the keyboard: `.agents/skills/forms-keyboard/`.
 
 ## Design system and theming
 

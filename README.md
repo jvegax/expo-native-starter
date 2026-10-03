@@ -123,7 +123,7 @@ Adding, removing or upgrading a library with native code needs a new development
 
 ## AI coding agents
 
-`AGENTS.md` is the entry point. `.agents/skills/app-architecture/` (symlinked from `.claude/skills/`) tells an agent where every file goes and which shared code already exists; `.agents/skills/navigation-auth/` covers routes, the auth gate, tabs, the drawer and swapping in real auth.
+`AGENTS.md` is the entry point. `.agents/skills/app-architecture/` (symlinked from `.claude/skills/`) tells an agent where every file goes and which shared code already exists; `.agents/skills/navigation-auth/` covers routes, the auth gate, tabs, the drawer and swapping in real auth; `.agents/skills/forms-keyboard/` covers inputs, forms and the keyboard.
 
 ## License
 

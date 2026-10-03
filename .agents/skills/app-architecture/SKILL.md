@@ -29,7 +29,7 @@ src/
 └── types/          Ambient .d.ts only (env, i18next, tanstack-query registrations).
 ```
 
-Read `references/config-and-i18n.md` before touching `config/`, `providers/`, env vars, SDKs or translations. Load the `navigation-auth` skill before touching routes, `_layout.tsx` files, tabs, the drawer or the auth/session flow.
+Read `references/config-and-i18n.md` before touching `config/`, `providers/`, env vars, SDKs or translations. Load the `navigation-auth` skill before touching routes, `_layout.tsx` files, tabs, the drawer or the auth/session flow, and the `forms-keyboard` skill before building a form, an input or anything the keyboard can cover.
 
 ## Imports
 
@@ -98,7 +98,7 @@ Screens compose across domains (a home screen may render `ClubCard` and call `us
 1. Screen in `screens/<d>/<entity>/<name>-screen.tsx`: calls query hooks, composes components, picks its container (step 4), sets `<Stack.Screen options={{ title }} />`. Route params arrive as props.
 2. Route file in `src/app/...`: `export { XScreen as default } from '@/screens/<d>/<entity>/<name>-screen'`, or a 5-line component that reads `useLocalSearchParams` and passes props. Nothing else lives in `src/app`. Which folder (inside a tab, over the tabs, a sheet, signed-out only) is decided by the `navigation-auth` skill's "Where does a new screen go?" table.
 3. Navigate with typed hrefs: `router.push({ pathname: '/clubs/[clubId]', params: { clubId } })`. Group folders like `(app)` are not part of the URL.
-4. Container: static content in `<ScrollScreen>` (first native child, so large titles collapse and tab bars inset); a data list in `<List>` (inside `<Screen edges={['left', 'right']}>` when it needs loading/error states, as `ClubListScreen` does, so the list scrolls under the tab bar); non-scrolling content in `<Screen>` (its bottom safe-area edge clears the tab bar).
+4. Container: a screen with text inputs in `<FormScrollScreen>` (forms-keyboard skill); static content in `<ScrollScreen>` (first native child, so large titles collapse and tab bars inset); a data list in `<List>` (inside `<Screen edges={['left', 'right']}>` when it needs loading/error states, as `ClubListScreen` does, so the list scrolls under the tab bar); non-scrolling content in `<Screen>` (its bottom safe-area edge clears the tab bar).
 
 **New translation**
 Add the key to every language file of the domain namespace (`features/<d>/i18n/*.json`), grouped under the entity. Use `useTranslation('<domain>')`; strings shared across domains go to `shared/i18n` (`common` namespace). Keys are typed: `bunx tsc --noEmit` fails on typos.
@@ -135,7 +135,7 @@ Files are kebab-case with a layer suffix; exports are PascalCase for components/
 | Local UI state of one component/screen             | `useState` / `useReducer`              |
 | Client state shared across screens (session, filters, drafts, prefs) | Zustand store in `features/<d>/store/<entity>/` (reference: `features/auth/store/session/session.store.ts`) |
 | Derived from server data                           | `select` in the query, or compute in render |
-| Form state                                         | local state (or a form lib if one is adopted) |
+| Form state                                         | `useUncontrolledForm` (`@/shared/hooks/use-uncontrolled-form`): values in a ref, errors in state. No form library, never controlled inputs (forms-keyboard skill) |
 
 ## Reuse before writing
 
@@ -149,7 +149,9 @@ Files are kebab-case with a layer suffix; exports are PascalCase for components/
 | Loading / error / empty rendering     | `<AsyncState>` in `@/shared/ui/async-state/async-state`  |
 | Screen container, text, button        | `<Screen>`, `<Text>`, `<Button>` in `@/shared/ui/<name>/<name>` |
 | Scrollable static screen              | `<ScrollScreen>` in `@/shared/ui/scroll-screen/scroll-screen` (`contentInsetAdjustmentBehavior="automatic"`: large titles collapse, content clears the tab bar) |
-| Text input with label and error       | `<TextField>` in `@/shared/ui/text-field/text-field` |
+| Text input with label and error       | `<TextField>` in `@/shared/ui/text-field/text-field`: uncontrolled (no `value` prop), refs typed `TextFieldHandle`. `TextInput` from `react-native` is a lint error. |
+| Form values, errors, Next chain, submit | `useUncontrolledForm` in `@/shared/hooks/use-uncontrolled-form` (forms-keyboard skill) |
+| Screen with inputs (keyboard-aware)   | `<FormScrollScreen>` in `@/shared/ui/form-scroll-screen/form-scroll-screen` (native keyboard insets on iOS, react-native-keyboard-controller on Android). `KeyboardAvoidingView` is a lint error. |
 | Platform icon                         | `<Icon ios="<SF Symbol>" android="<Material Symbol>" />` in `@/shared/ui/icon/icon` (expo-symbols). No icon font library. |
 | Settings-style menu rows              | `<ListSection>` + `<ListRow>` in `@/shared/ui/list-section/list-section`, `@/shared/ui/list-row/list-row` (short static menus; data lists use `<List>`) |
 | Session (signed in?, user, sign out)  | `useSessionStore` + `selectIsSignedIn` / `selectUser` in `@/features/auth/store/session/session.store`, `useConfirmSignOut` in `@/features/auth/hooks/session/use-confirm-sign-out`. See the `navigation-auth` skill. |

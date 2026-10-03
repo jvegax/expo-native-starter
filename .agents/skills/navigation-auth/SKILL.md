@@ -65,7 +65,7 @@ Full rationale and the URL map: `references/route-tree.md`.
 - At most **5 visible tabs** on Android (a 6th crashes). More destinations go in the drawer.
 - Every tab mounts at start. Defer heavy work in a tab with `useIsFocused` / `useFocusEffect`.
 - Tabs have no header: each tab folder has `_layout.tsx` → `SectionStackLayout`.
-- Make a `ScrollView` / `<List>` the screen's first native child (`<ScrollScreen>` or `<List>`) so iOS collapses the large title, insets content above the tab bar and minimizes it on iOS 26 (`minimizeBehavior`). Tapping the active tab pops to root and scrolls to top.
+- Make a `ScrollView` / `<List>` the screen's first native child (`<ScrollScreen>`, `<FormScrollScreen>` for screens with inputs, or `<List>`) so iOS collapses the large title, insets content above the tab bar and minimizes it on iOS 26 (`minimizeBehavior`). Tapping the active tab pops to root and scrolls to top.
 - Icons: `sf` (SF Symbol, `{ default, selected }` allowed) and `md` (Material Symbol name). No icon library is needed.
 
 ## Drawer (rules)
@@ -103,7 +103,8 @@ Then:
 | Sign out with confirmation | `useConfirmSignOut` |
 | Client-side form validation | `validateSignIn`, `validateSignUp`, `authErrorCode` (`features/auth/utils/session/validate-credentials.ts`) |
 | Avatar + name + email | `<UserSummary>` (`components/account/user/user-summary`) |
-| Text input with label and error | `<TextField>` (`shared/ui/text-field`) |
+| Text input with label and error | `<TextField>` (`shared/ui/text-field`), uncontrolled; forms use `useUncontrolledForm` (forms-keyboard skill) |
+| Screen with inputs (sign-in, sign-up, edit forms) | `<FormScrollScreen>` (`shared/ui/form-scroll-screen`) |
 | Platform icon | `<Icon ios="..." android="..." />` (`shared/ui/icon`, expo-symbols) |
 | Settings-style menu | `<ListSection>` + `<ListRow>` (`shared/ui/list-section`, `shared/ui/list-row`) |
 | Static scrollable screen in a tab or stack | `<ScrollScreen>` (`shared/ui/scroll-screen`); data lists use `<List>` |

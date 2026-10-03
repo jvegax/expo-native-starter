@@ -43,7 +43,7 @@ Rules for the startup path:
 - Navigation theme built from our tokens (`shared/theme/navigation-theme.ts`): no white header or white flash in dark mode.
 - The app and section stacks set `freezeOnBlur: true`, so hidden screens stop re-rendering.
 - Tabs are `NativeTabs` (`expo-router/unstable-native-tabs`): the platform tab bar, Liquid Glass and minimize-on-scroll on iOS 26, Material on Android. Every tab mounts at start, so a tab with heavy work defers it with `useIsFocused` / `useFocusEffect`.
-- Each tab and drawer item is its own native Stack with an iOS large title. The first native child must be the scroll view (`<ScrollScreen>` or `<List>`), so the title collapses, content clears the tab bar and the bar minimizes.
+- Each tab and drawer item is its own native Stack with an iOS large title. The first native child must be the scroll view (`<ScrollScreen>`, `<FormScrollScreen>` or `<List>`), so the title collapses, content clears the tab bar and the bar minimizes.
 - The drawer uses `drawerType: 'front'` (the native tab bar does not slide) and swipes open on Android only; on iOS the edge swipe stays the back gesture.
 - Icons are SF Symbols on iOS and Material Symbols on Android (`<Icon>`, expo-symbols). On Android expo-symbols draws them with the Material Symbols font, loaded on first use, so an icon can appear a frame after its screen. Icons are decorative: the surrounding control carries the accessibility label.
 - Sign-out confirmation is a native `Alert` with a destructive action.
@@ -73,7 +73,7 @@ Reanimated 4 and Gesture Handler are installed and the app is wrapped in `Gestur
 
 `react-native-nitro-modules` is pinned to exactly `0.37.1`: its native ABI must match every Nitro library, so upgrade it only together with them. Any library with native code needs `bunx expo install` and a new development build.
 
-Worth adding only when a measurement says so: [react-native-nitro-fetch](https://github.com/margelo/react-native-nitro-fetch), [Unistyles v3](https://unistyl.es), [react-native-keyboard-controller](https://kirillzyusko.github.io/react-native-keyboard-controller/), [react-native-release-profiler](https://github.com/margelo/react-native-release-profiler), [expo-observe](https://docs.expo.dev/versions/v57.0.0/sdk/observe/).
+Worth adding only when a measurement says so: [react-native-nitro-fetch](https://github.com/margelo/react-native-nitro-fetch), [Unistyles v3](https://unistyl.es), [react-native-release-profiler](https://github.com/margelo/react-native-release-profiler), [expo-observe](https://docs.expo.dev/versions/v57.0.0/sdk/observe/).
 
 ## Measuring
 
