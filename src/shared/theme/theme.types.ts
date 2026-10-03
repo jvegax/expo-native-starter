@@ -16,6 +16,8 @@ export type ThemeColors = {
   primary: string;
   primaryPressed: string;
   onPrimary: string;
+  /** Tinted surface for selected states (Material 3 active indicator, selected chips). Pairs with `primary`. */
+  primaryContainer: string;
   border: string;
   danger: string;
   success: string;
